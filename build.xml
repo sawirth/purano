@@ -122,7 +122,7 @@
   
   
   <target name="compile.module.purano" depends="compile.module.purano.production,compile.module.purano.tests" description="Compile module purano"/>
-  
+
   <target name="compile.module.purano.production" description="Compile module purano; production classes">
     <mkdir dir="${purano.output.dir}"/>
     <javac destdir="${purano.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
@@ -140,7 +140,7 @@
       </fileset>
     </copy>
   </target>
-  
+
   <target name="compile.module.purano.tests" depends="compile.module.purano.production" description="compile module purano; test classes" unless="skip.tests"/>
   
   <target name="clean.module.purano" description="cleanup module">

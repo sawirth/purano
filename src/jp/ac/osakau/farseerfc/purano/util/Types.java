@@ -69,7 +69,7 @@ public class Types {
 		}
 		if (desc2type.containsKey(desc.charAt(0))) {
 			LinkedList<String> result = nextDesc(desc.substring(1));
-			result.addFirst(desc.substring(0));
+			result.addFirst(desc);
 			return result;
 		}
 		if (desc.charAt(0) == '[') {
@@ -125,31 +125,8 @@ public class Types {
 		if(name.startsWith("[")){
 			name = ArrayStub.class.getName();
 		}
-		
-		if(!shorten){
-			return name;
-		}
-		
-		String className = name.substring(name.lastIndexOf('.') + 1);
-		if (fullClassNames.containsKey(className)) {
-			if (fullClassNames.get(className).equals(name)) {
-				return className;
-			} else {
-				return name;
-			}
-		} else {
-			if (packageName == null) {
-				// first package name is class package
-				packageName = name.substring(0, name.lastIndexOf('.'));
-				return className;
-			}
-			if (packageName.equals(name.substring(0, name.lastIndexOf('.')))) {
-				// within the same package
-				return className;
-			}
-			fullClassNames.put(className, name);
-			return className;
-		}
+
+		return name;
 	}
 
 	@NotNull

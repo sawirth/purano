@@ -117,7 +117,6 @@ public class ClassFinder {
 //        ClassFinderDumpper dumpper = new StreamDumpper(out,cf);
 
         dumpper.dump();
-
         log.info("Runtime :"+(System.currentTimeMillis() - start));
     }
 

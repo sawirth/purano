@@ -55,7 +55,7 @@ public class LegacyDumpper implements ClassFinderDumpper {
                         sb.add("Equals Stateful:" + mtd.toString(new Types()));
                     }else{
                         emodifier ++;
-                        sb.add("Equals Motifier:" + mtd.toString(new Types()));
+                        sb.add("Equals Modifier:" + mtd.toString(new Types()));
                         if(p==(Purity.Stateless | Purity.Native)){
                             esln ++ ;
                         }else if (p==(Purity.Stateless | Purity.Native)){
@@ -99,6 +99,8 @@ public class LegacyDumpper implements ClassFinderDumpper {
             }
 
             ClassRep cls = cf.classMap.get(clsName);
+
+            //TODO Hier wird pro Klasse der Output in die Konsole geschrieben
             System.out.println(Joiner.on("\n").join(cls.dump(table)));
             for(MethodRep mtd: cls.getAllMethods()){
                 method++;
