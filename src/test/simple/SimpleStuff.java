@@ -1,11 +1,16 @@
 package test.simple;
 
+import jp.ac.osakau.farseerfc.purano.reflect.MethodRep;
+
 import java.awt.*;
+import java.io.File;
 
 public class SimpleStuff {
     private int multiplier = 2;
-    private static int staticInt = 5;
+    public int otherField = 3;
+    public static int staticInt = 5;
     public static final int staticFinalInt = 100;
+    public File file;
 
 
     /**
@@ -35,6 +40,11 @@ public class SimpleStuff {
     public int impure() {
         this.multiplier++;
         return 6;
+    }
+
+    public int dependOnArgument_FieldModifier(int a) {
+        this.multiplier++;
+        return a * 5;
     }
 
     public static int getStaticInt() {
@@ -100,5 +110,26 @@ public class SimpleStuff {
         }
 
         return a;
+    }
+
+    public int stateful_multiple_fields() {
+        return this.multiplier * this.otherField;
+    }
+
+    public int stateful_multiple_fields_notThisButSameClass() {
+        SimpleStuff ss = new SimpleStuff();
+        return ss.otherField * ss.multiplier;
+    }
+
+    public int stateful_multiple_fields_otherClass() {
+        Data d = new Data();
+        d.a = 4;
+        d.b = 4;
+
+        return d.a * d.b;
+    }
+
+    public void setMultiplier(int multiplier) {
+        this.multiplier = multiplier;
     }
 }

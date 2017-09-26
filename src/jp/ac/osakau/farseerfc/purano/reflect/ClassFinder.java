@@ -22,6 +22,7 @@ public class ClassFinder {
     final List<String> prefix;
 
     private static int MAX_LOAD_PASS = 100;
+    private static final int MAX_RUN = 3;
 
 	public ClassFinder(@NotNull List<String> prefix){
         findTargetClasses(prefix);
@@ -48,14 +49,12 @@ public class ClassFinder {
                 loadedClassesTrace.add(allCreps.size());
 			}
             changedMethod = 0;
-//            Set<MethodRep> changedSignatures = new HashSet<>();
 			for (ClassRep crep : allCreps ) {
 				for (MethodRep mrep : crep.getAllMethods()) {
 					if (mrep.isNeedResolve(this)) {
 						if (mrep.resolve(++timestamp, this)) {
 							changed = true;
                             changedMethod ++;
-//                            changedSignatures.add(mrep);
 						}
 					}
 				}
@@ -64,21 +63,14 @@ public class ClassFinder {
             log.info(String.format("Pass: %d Classes: %s Changed Method: %d [%s]",
                     pass++,allCreps.size(),changedMethod,
                     Joiner.on(", ").join(changedMethodsTrace)));
-//            final int maxdump=4;
-//            if(changedMethod>maxdump){
-//                MethodRep [] top = new MethodRep [maxdump];
-//                int i=0;
-//                for(MethodRep mid : changedSignatures){
-//                    if(i>=maxdump)break;
-//                    top[i++]=mid;
-//                }
-//                System.out.println(Joiner.on(", ").join(top));
-//            }else{
-//                for(MethodRep m:changedSignatures){
-//                    System.out.println(Joiner.on("\n").join(m.dump(this, new Types())));
-//                }
-//            }
-		} while (changed);
+		} while (changed && pass < MAX_RUN);
+
+		Set<ClassRep> userRep = new HashSet<>();
+        for (ClassRep rep : allCreps) {
+            if (rep.name.contains("test.")) {
+                userRep.add(rep);
+            }
+        }
 
         log.info("Loaded Classes: " + Joiner.on(", ").join(loadedClassesTrace));
         log.info("Changed methods: "+Joiner.on(", ").join(changedMethodsTrace));
@@ -113,8 +105,12 @@ public class ClassFinder {
         ClassFinder cf = new ClassFinder(Arrays.asList(targetPackage));
         cf.resolveMethods();
 
-        ClassFinderDumpper dumpper = new LegacyDumpper(cf);
-//        ClassFinderDumpper dumpper = new StreamDumpper(out,cf);
+//        ClassFinderDumpper dumpper = new LegacyDumpper(cf);
+        //Das ClassFinder Objekt beinhaltet alle nötigen Informationen im Prinzip
+        //Am besten wandelt man diese Daten zuerst in besser lesbare Daten um, welche weniger Vererbung und nur die
+        //nötigsten Infos enthalten. Danach könnte man dynamisch eine Ausgabe als XML, CSV oder JSON machen
+        //Anhand von diesen Daten könnte man dann die Dokumentation schreiben
+        ClassFinderDumpper dumpper = new DumyDumpper(cf);
 
         dumpper.dump();
         log.info("Runtime :"+(System.currentTimeMillis() - start));

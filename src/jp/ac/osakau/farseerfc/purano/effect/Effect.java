@@ -80,7 +80,6 @@ public abstract class Effect<T extends Effect> implements Cloneable{
 
     @Override
     public int hashCode() {
-        int result = "Effect".hashCode();
-        return result;
+		return "Effect".hashCode();
     }
 }

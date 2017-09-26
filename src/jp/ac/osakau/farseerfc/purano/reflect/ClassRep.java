@@ -24,7 +24,7 @@ public class ClassRep extends ClassVisitor {
 
 
 	@NotNull
-    private final @Getter String name;
+    public final @Getter String name;
 
 	private final ClassFinder classFinder;
 

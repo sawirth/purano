@@ -88,7 +88,27 @@ public class DepValue implements Value {
             assert(method.isArg(local) || local == 0);
 
             if (method.isStatic() || local != 0) {
-                effect.getArgumentEffects().add(new ArgumentEffect(local, deps, from));
+                effect.getArgumentEffects().add(new ArgumentEffect(local, deps, from, ""));
+            }
+        }
+    }
+
+    public void modify(@NotNull DepEffect effect, @NotNull MethodRep method, MethodRep from, String fieldName) {
+        for(FieldDep fd: lvalue.getFields()){
+            assert(!method.isStatic());
+            if(method.isStatic()){
+                throw new RuntimeException("Found this field effect in static method!");
+            }
+            effect.addThisField(new FieldEffect(fd.getDesc(),fd.getOwner(),fd.getName(),deps,from));
+        }
+        for(FieldDep fd: lvalue.getStatics()){
+            effect.addStaticField(new StaticEffect(fd.getDesc(), fd.getOwner(), fd.getName(), deps, from));
+        }
+        for(int local: lvalue.getLocals()){
+            assert(method.isArg(local) || local == 0);
+
+            if (method.isStatic() || local != 0) {
+                effect.getArgumentEffects().add(new ArgumentEffect(local, deps, from, fieldName));
             }
         }
     }

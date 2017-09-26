@@ -40,67 +40,11 @@ public class LegacyDumpper implements ClassFinderDumpper {
                 }
             }
 
-            for(MethodRep mtd: cf.classMap.get(clsName).getAllMethods()){
-                int p=mtd.purity();
-                if(mtd.getInsnNode().name.equals("equals") && mtd.getInsnNode().desc.equals("(Ljava/lang/Object;)Z")){
-                    emethod++;
-                    if(p == Purity.Unknown){
-                        eunknown ++;
-                    }
-                    if(p == Purity.Stateless){
-                        estateless ++;
-                        sb.add("Equals Stateless:" + mtd.toString(new Types()));
-                    }else if(p == Purity.Stateful){
-                        estateful ++;
-                        sb.add("Equals Stateful:" + mtd.toString(new Types()));
-                    }else{
-                        emodifier ++;
-                        sb.add("Equals Modifier:" + mtd.toString(new Types()));
-                        if(p==(Purity.Stateless | Purity.Native)){
-                            esln ++ ;
-                        }else if (p==(Purity.Stateless | Purity.Native)){
-                            esfn ++ ;
-                        }
-
-                        if((p | Purity.Native)>0){
-                            en++;
-                        }
-                    }
-                }
-                if(mtd.getInsnNode().name.equals("hashCode")&& mtd.getInsnNode().desc.equals("()I")){
-                    hmethod++;
-                    if(p == Purity.Unknown){
-                        hunknown ++;
-                    }
-                    if(p == Purity.Stateless){
-                        hstateless ++;
-                        sb.add("hashCode Stateless:" + mtd.toString(new Types()));
-                    }else if(p == Purity.Stateful){
-                        hstateful ++;
-                        sb.add("hashCode Stateful:" + mtd.toString(new Types()));
-                    }else{
-                        hmodifier ++;
-                        sb.add("hashCode Modifier:" + mtd.toString(new Types()));
-                        if(p==(Purity.Stateless | Purity.Native)){
-                            hsln ++ ;
-                        }else if (p==(Purity.Stateless | Purity.Native)){
-                            hsfn ++ ;
-                        }
-                        if((p | Purity.Native)>0){
-                            hn++;
-                        }
-                    }
-                }
-            }
-
-
             if (!isTarget) {
                 continue;
             }
 
             ClassRep cls = cf.classMap.get(clsName);
-
-            //TODO Hier wird pro Klasse der Output in die Konsole geschrieben
             System.out.println(Joiner.on("\n").join(cls.dump(table)));
             for(MethodRep mtd: cls.getAllMethods()){
                 method++;
@@ -146,24 +90,6 @@ public class LegacyDumpper implements ClassFinderDumpper {
         System.out.println("staticM "+staticM);
         System.out.println("argM "+argM);
         System.out.println("nativeE "+nativeE);
-
-        System.out.println("emethod "+emethod);
-        System.out.println("eunknown "+eunknown);
-        System.out.println("estateless "+estateless);
-        System.out.println("estateful "+estateful);
-        System.out.println("emodifier "+emodifier);
-        System.out.println("esln "+esln);
-        System.out.println("esfn "+esfn);
-        System.out.println("en "+en);
-
-        System.out.println("hmethod "+hmethod);
-        System.out.println("hunknown "+hunknown);
-        System.out.println("hstateless "+hstateless);
-        System.out.println("hstateful "+hstateful);
-        System.out.println("hmodifier "+hmodifier);
-        System.out.println("hsln "+hsln);
-        System.out.println("hsfn "+hsfn);
-        System.out.println("hn "+hn);
 
         System.out.println(Joiner.on("\n").join(sb));
     }

@@ -446,12 +446,12 @@ public class DepInterpreter extends Interpreter<DepValue> implements Opcodes{
                 DepValue dv = new DepValue(value2.getType(), value2.getDeps());
                 dv.getLvalue().merge(value1.getLvalue());
                 dv.getLvalue().getFields().add(new FieldDep(fin.desc, fin.owner, fin.name));
-                dv.modify(effect, method, null);
+                dv.modify(effect, method, null, fin.name);
             } else {
                 // sth.name == v2
                 // sth maybe arg or this.otherField or staticField
                 value1.setDeps(new DepSet(value2.getDeps()));
-                value1.modify(effect, method, null);
+                value1.modify(effect, method, null, fin.name);
             }
         	return null;
         }
