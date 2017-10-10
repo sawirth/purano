@@ -5,3 +5,4 @@ out/*
 *.iml
 lib/target
 /.apt_generated
+*_purity.java

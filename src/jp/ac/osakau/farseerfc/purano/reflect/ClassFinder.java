@@ -1,5 +1,6 @@
 package jp.ac.osakau.farseerfc.purano.reflect;
 
+import ch.sawirth.serialization.JsonSerializer;
 import com.google.common.base.Joiner;
 import com.martiansoftware.jsap.*;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class ClassFinder {
     final List<String> prefix;
 
     private static int MAX_LOAD_PASS = 100;
-    private static final int MAX_RUN = 3;
+    private static final int MAX_RUN = 2;
 
 	public ClassFinder(@NotNull List<String> prefix){
         findTargetClasses(prefix);
@@ -33,7 +34,7 @@ public class ClassFinder {
 		this(Arrays.asList(string));
 	}
 
-	public void resolveMethods() {
+	public Set<ClassRep> resolveMethods() {
 		int timestamp = 0;
 		Set<ClassRep> allCreps = new HashSet<>(classMap.values());
 		boolean changed;
@@ -74,6 +75,8 @@ public class ClassFinder {
 
         log.info("Loaded Classes: " + Joiner.on(", ").join(loadedClassesTrace));
         log.info("Changed methods: "+Joiner.on(", ").join(changedMethodsTrace));
+
+        return userRep;
 	}
 	
 	private void findTargetClasses(@NotNull Collection<String> prefixes){
@@ -103,16 +106,17 @@ public class ClassFinder {
         long start=System.currentTimeMillis();
 
         ClassFinder cf = new ClassFinder(Arrays.asList(targetPackage));
-        cf.resolveMethods();
+        Set<ClassRep> userRep = cf.resolveMethods();
 
 //        ClassFinderDumpper dumpper = new LegacyDumpper(cf);
         //Das ClassFinder Objekt beinhaltet alle nötigen Informationen im Prinzip
         //Am besten wandelt man diese Daten zuerst in besser lesbare Daten um, welche weniger Vererbung und nur die
         //nötigsten Infos enthalten. Danach könnte man dynamisch eine Ausgabe als XML, CSV oder JSON machen
         //Anhand von diesen Daten könnte man dann die Dokumentation schreiben
-        ClassFinderDumpper dumpper = new DumyDumpper(cf);
+        String saveToPath = "C:\\Users\\Sandro\\Documents\\GitHub\\SideEffectsDocumenter";
+        JsonSerializer jsonSerializer = new JsonSerializer(userRep, saveToPath);
+        jsonSerializer.serializeToGson();
 
-        dumpper.dump();
         log.info("Runtime :"+(System.currentTimeMillis() - start));
     }
 
