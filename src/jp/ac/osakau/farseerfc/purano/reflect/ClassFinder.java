@@ -108,11 +108,7 @@ public class ClassFinder {
         ClassFinder cf = new ClassFinder(Arrays.asList(targetPackage));
         Set<ClassRep> userRep = cf.resolveMethods();
 
-//        ClassFinderDumpper dumpper = new LegacyDumpper(cf);
-        //Das ClassFinder Objekt beinhaltet alle nötigen Informationen im Prinzip
-        //Am besten wandelt man diese Daten zuerst in besser lesbare Daten um, welche weniger Vererbung und nur die
-        //nötigsten Infos enthalten. Danach könnte man dynamisch eine Ausgabe als XML, CSV oder JSON machen
-        //Anhand von diesen Daten könnte man dann die Dokumentation schreiben
+        //TODO adjust path
         String saveToPath = "C:\\Users\\Sandro\\Documents\\GitHub\\SideEffectsDocumenter";
         JsonSerializer jsonSerializer = new JsonSerializer(userRep, saveToPath);
         jsonSerializer.serializeToGson();
