@@ -72,7 +72,7 @@ public class JoldenTest {
 	
 	    File output = new File("/tmp/output-"+suite+".html");
 	    PrintStream ps = new PrintStream(new FileOutputStream(output));
-	    ClassFinderDumpper dumpper = new HtmlDumpper(ps,cf);
+	    ClassFinderDumpper dumpper = new HtmlDumpper(ps,cf, false);
 	    dumpper.dump();
 	}
 }

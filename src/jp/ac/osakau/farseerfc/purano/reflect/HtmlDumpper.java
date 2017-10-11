@@ -55,16 +55,18 @@ public class HtmlDumpper implements ClassFinderDumpper {
     private final Escaper esc;
     private final Configuration cfg;
     private final Types table;
-    
+    private final boolean includeNonTargetClasses;
+
     private static final boolean includeNonTargetEH = true;
     private static final boolean ignoreNative = false;
     private static final boolean dumpSourceCode = false;
     private static final boolean dumpAsmCode = true;
     private static final boolean dumpEffects = true;
 
-    public HtmlDumpper(PrintStream out, ClassFinder cf) throws IOException {
+    public HtmlDumpper(PrintStream out, ClassFinder cf, boolean includeNonTargetClasses) throws IOException {
         this.out = out;
         this.cf = cf;
+        this.includeNonTargetClasses = includeNonTargetClasses;
         this.esc = Escaper.getHtml();
         
         this.cfg = new Configuration();
@@ -238,9 +240,11 @@ public class HtmlDumpper implements ClassFinderDumpper {
         			break;
         		}
         	}
-            if (!isTarget) {
+
+            if (!isTarget && !includeNonTargetClasses) {
                 continue;
             }
+
             ClassRep cls = cf.classMap.get(clsName);
             result.get("classes").add(dumpClass(cls));
         }
@@ -259,50 +263,27 @@ public class HtmlDumpper implements ClassFinderDumpper {
 		}
     }
     
-    
     public String dumpClass(ClassRep cls){
     	Map<String, Object> result = new HashMap<>();
     	result.put("name", table.fullClassName(cls.getName()));
-//    	result.put("methods", cls.getAllMethods().stream()
-//    			.map(method -> dumpMethod(method))
-//    			.collect(Collectors.toList()));
     	
     	List<String> methodsDump = new ArrayList<>();
     	for(MethodRep m: cls.getAllMethods()){
     		methodsDump.add( dumpMethod(m));
     	}
     	result.put("methods", methodsDump);
-    	
-//    	result.put("cache", Joiner.on(",").join(
-//    			cls.getCacheFields().stream()
-//    			.map(fd -> fd.dump(table))
-//    			.collect(Collectors.toList())));
-    	
-//    	result.put("caches", cls.getFieldWrite().entrySet().stream()
-//    			.map(entry -> entry.getKey().dump(table) + ": " +
-//    					Joiner.on("<br/>").join(entry.getValue().stream()
-//    							.map(e -> table.dumpMethodDesc(e.getInsnNode().desc, e.getInsnNode().name))
-//    							.collect(Collectors.toList())))
-//    			.collect(Collectors.toList()));
-    	
     	List<String> caches = new ArrayList<>();
     	for(Entry<FieldDep, Set<MethodRep>> f: cls.getFieldWrite().entrySet()){
     		List<String> lines = new ArrayList<>();
     		for (MethodRep e: f.getValue()){
     			lines.add(table.dumpMethodDesc(e.getInsnNode().desc, e.getInsnNode().name));
     		}
+
     		caches.add(f.getKey().dump(table) + ": " + Joiner.on("<br/>"));
     	}
-    	result.put("caches", caches);
-    	
-    	
-    	
-//    	result.put("source", cls.getSource());
 
-//    	result.put("caches", cls.getFieldWrite().entrySet().stream()
-//    			.map(entry -> entry.getKey().dump(table) + ": " +
-//    					entry.getValue().size())
-//    			.collect(Collectors.toList()));
+    	result.put("caches", caches);
+
     	try {
 			Template tmpl = cfg.getTemplate("class.ftl");
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -315,17 +296,12 @@ public class HtmlDumpper implements ClassFinderDumpper {
     	return null;
     }
 
-    // Suppress Warning because we put different things (string and list) in a single list
-    @SuppressWarnings("unchecked")
-	public String dumpMethod(MethodRep method){
+    private String dumpMethod(MethodRep method){
     	Map<String, Object> result = new HashMap<>();
     	List<String> emptyList=new ArrayList<>();
     	    	
     	if(method.getMethodNode() != null){
 			result.put("name", esc.methodName(method.toString(table)));
-//			List<String> overrides=method.getOverrided().values().stream()
-//					.map( rep -> rep.toString(table))
-//					.collect(Collectors.toList());
 			List<String> overrides= new ArrayList<>();
 			for(MethodRep m: method.getOverrided().values()){
 				overrides.add(m.toString(table));
@@ -376,7 +352,6 @@ public class HtmlDumpper implements ClassFinderDumpper {
             }else{
             	result.put("source", "");
             }
-			
 		}else{
 			return "";
 		}
@@ -392,7 +367,6 @@ public class HtmlDumpper implements ClassFinderDumpper {
 		}
     	return "";
     }
-
 
 	private String dumpForResults(MethodRep methodRep, Types table,
 			String string, Escaper esc) {
@@ -417,7 +391,6 @@ public class HtmlDumpper implements ClassFinderDumpper {
 		return Joiner.on("\n").join(result);
 	}
 
-
 	private String dumpMethodSource(MethodRep method) {
 		String sourceCode= method.getSource();
 		
@@ -438,13 +411,8 @@ public class HtmlDumpper implements ClassFinderDumpper {
 				}
 				sourcelines.add(String.format("%d: [%s]", line,
 						Joiner.on(", ").join(sourceLines)));
-				
-//				sourcelines.add(String.format("%d: [%s]", line,
-//						visitor.getLineMap().get(line)
-//						.stream()
-//						.map( (x) -> String.format("\"%s\"", x.toString().trim() ))
-//						.collect(Collectors.joining(", "))));
 			}
+
 			sourceCode += Joiner.on("\n").join(sourcelines);
 			
 			String position = String.format("%s: (%d-%d):\n", 
@@ -457,7 +425,7 @@ public class HtmlDumpper implements ClassFinderDumpper {
 		return "";
 	}
     
-    public String dumpMethodAsm(@NotNull MethodRep method){
+    private String dumpMethodAsm(@NotNull MethodRep method){
     	ByteArrayOutputStream out = new ByteArrayOutputStream();
         final PrintWriter pw = new PrintWriter(out);
         
@@ -468,6 +436,7 @@ public class HtmlDumpper implements ClassFinderDumpper {
         		pw.flush();
         	}
         };
+
         TraceMethodVisitor tmv = new TraceMethodVisitor(text);
         method.getMethodNode().accept(tmv);
         
@@ -503,7 +472,12 @@ public class HtmlDumpper implements ClassFinderDumpper {
         return "";
     }
     
-    public List<String> dumpEffects(DepEffect depeffect, @NotNull MethodRep rep, @NotNull Types table, String prefix, Escaper esc){
+    private List<String> dumpEffects(DepEffect depeffect,
+                                     @NotNull MethodRep rep,
+                                     @NotNull Types table,
+                                     String prefix,
+                                     Escaper esc)
+    {
 		List<String> deps= new ArrayList<>();
 
         if(!depeffect.getReturnDep().getDeps().isEmpty()){

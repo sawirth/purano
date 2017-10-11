@@ -1,0 +1,673 @@
+<html>
+<head>
+<style>
+.clazz {
+	margin-left: 20px;
+}
+.members {
+	margin-left: 20px;
+}
+.method{
+	margin-left: 20px;
+	clear: both;
+}
+.purity{
+	margin-left: 20px;
+}
+.effects{
+	margin-left: 20px;
+}
+.calls{
+	margin-left: 20px;
+}
+.clazz{
+	margin-left: 20px;
+	clear: both;
+}
+.source{
+	float: left;
+	width: 34%;
+}
+.methodMember{
+	float: left;
+	width: 33%;
+}
+.asm{
+	float: left;
+	width: 33%;
+}
+</style>
+</head>
+<body>
+
+	<div class="clazz">
+		class 3
+	</div>
+	<div class="clazz">
+		method 12
+	</div>
+	<div class="clazz">
+		unknown 0
+	</div>
+	<div class="clazz">
+		stateless 4
+	</div>
+	<div class="clazz">
+		stateful 3
+	</div>
+	<div class="clazz">
+		modifier 5
+	</div>
+	<div class="clazz">
+		fieldM 2
+	</div>
+	<div class="clazz">
+		staticM 1
+	</div>
+	<div class="clazz">
+		argM 2
+	</div>
+	<div class="clazz">
+		nativeE 0
+	</div>
+	<div class="clazz">
+		emethod 19
+	</div>
+	<div class="clazz">
+		eunknown 0
+	</div>
+	<div class="clazz">
+		estateless 17
+	</div>
+	<div class="clazz">
+		estateful 2
+	</div>
+	<div class="clazz">
+		emodifier 0
+	</div>
+	<div class="clazz">
+		esln 0
+	</div>
+	<div class="clazz">
+		esfn 0
+	</div>
+	<div class="clazz">
+		en 0
+	</div>
+	<div class="clazz">
+		hmethod 20
+	</div>
+	<div class="clazz">
+		hunknown 0
+	</div>
+	<div class="clazz">
+		hstateless 18
+	</div>
+	<div class="clazz">
+		hstateful 1
+	</div>
+	<div class="clazz">
+		hmodifier 1
+	</div>
+	<div class="clazz">
+		hsln 0
+	</div>
+	<div class="clazz">
+		hsfn 0
+	</div>
+	<div class="clazz">
+		hn 1
+	</div>
+<hr/>
+
+<div>
+package  ;
+</div>
+<div>
+</div>
+	<div class="clazz">
+		<h2>class test</h2>
+<div class="caches">
+	fields: 
+</div>
+<div>
+<div class="members">
+</div>
+</div>
+
+	</div>
+	<div class="clazz">
+		<h2>class test.SandroTest</h2>
+<div class="caches">
+	fields: 
+		<p>int test.SandroTest.field: com.google.common.base.Joiner@5a87c962</p>
+</div>
+<div>
+<div class="members">
+		<div class="method">
+	<h3><span style="color:green">int test.SandroTest#dependDirect (test.Model)</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">Stateful</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Depend</span>(<span style="color:red">dependArguments= {"test.Model model"}, dependFields= {"int test.Model.a"}</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 36 L0
+    ICONST_2
+    ALOAD 1
+    GETFIELD test/Model.a : I
+    IMUL
+    IRETURN
+   L1
+    LOCALVARIABLE this Ltest/SandroTest; L0 L1 0
+    LOCALVARIABLE model Ltest/Model; L0 L1 1
+    MAXSTACK = 2
+    MAXLOCALS = 2
+<<<<<<<<<<<<<<
+   36: ICONST_2
+   36: ALOAD
+   36: GETFIELD
+   36: IMUL
+   36: IRETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+		<div class="method">
+	<h3><span style="color:green">void test.SandroTest#directModifier (test.Model)</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">ArgumentModifier</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 28 L0
+    ALOAD 1
+    ICONST_5
+    PUTFIELD test/Model.a : I
+   L1
+    LINENUMBER 29 L1
+    RETURN
+   L2
+    LOCALVARIABLE this Ltest/SandroTest; L0 L2 0
+    LOCALVARIABLE model Ltest/Model; L0 L2 1
+    MAXSTACK = 2
+    MAXLOCALS = 2
+<<<<<<<<<<<<<<
+   28: ALOAD
+   28: ICONST_5
+   28: PUTFIELD
+@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>)
+   29: RETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+		<div class="method">
+	<h3><span style="color:green">int test.SandroTest#stateful (int)</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">Stateful</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Depend</span>(<span style="color:red">dependThis=true, dependArguments= {"int a"}, dependFields= {"int test.SandroTest.field"}</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 12 L0
+    ALOAD 0
+    GETFIELD test/SandroTest.field : I
+    ILOAD 1
+    IMUL
+    IRETURN
+   L1
+    LOCALVARIABLE this Ltest/SandroTest; L0 L1 0
+    LOCALVARIABLE a I L0 L1 1
+    MAXSTACK = 2
+    MAXLOCALS = 2
+<<<<<<<<<<<<<<
+   12: ALOAD
+   12: GETFIELD
+   12: ILOAD
+   12: IMUL
+   12: IRETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+		<div class="method">
+	<h3><span style="color:green">int test.SandroTest#dependWithGetter (test.Model)</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">Stateless</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Depend</span>(<span style="color:red">dependArguments= {"test.Model model"}</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 32 L0
+    ICONST_5
+    ALOAD 1
+    INVOKEVIRTUAL test/Model.getA ()I
+    IMUL
+    IRETURN
+   L1
+    LOCALVARIABLE this Ltest/SandroTest; L0 L1 0
+    LOCALVARIABLE model Ltest/Model; L0 L1 1
+    MAXSTACK = 2
+    MAXLOCALS = 2
+<<<<<<<<<<<<<<
+   32: ICONST_5
+   32: ALOAD
+   32: INVOKEVIRTUAL
+   32: IMUL
+   32: IRETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+		<div class="method">
+	<h3><span style="color:green">int test.SandroTest#stateless (int)</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">Stateless</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Depend</span>(<span style="color:red">dependArguments= {"int a"}</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 8 L0
+    ILOAD 1
+    ILOAD 1
+    IMUL
+    IRETURN
+   L1
+    LOCALVARIABLE this Ltest/SandroTest; L0 L1 0
+    LOCALVARIABLE a I L0 L1 1
+    MAXSTACK = 2
+    MAXLOCALS = 2
+<<<<<<<<<<<<<<
+    8: ILOAD
+    8: ILOAD
+    8: IMUL
+    8: IRETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+		<div class="method">
+	<h3><span style="color:green">void test.SandroTest#<init> ()</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">Stateless</span></div>
+		
+		<div class="effects">
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 3 L0
+    ALOAD 0
+    INVOKESPECIAL java/lang/Object.<init> ()V
+    RETURN
+   L1
+    LOCALVARIABLE this Ltest/SandroTest; L0 L1 0
+    MAXSTACK = 1
+    MAXLOCALS = 1
+<<<<<<<<<<<<<<
+    3: ALOAD
+    3: INVOKESPECIAL
+    3: RETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+		<div class="method">
+	<h3><span style="color:green">void test.SandroTest#argumentModifier (test.Model)</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">ArgumentModifier</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>, <span style="color:red">dependArguments= {"test.Model model"}</span>, <span style="color:red">from = "void test.Model#setA (int)"</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 24 L0
+    ALOAD 1
+    ICONST_5
+    INVOKEVIRTUAL test/Model.setA (I)V
+   L1
+    LINENUMBER 25 L1
+    RETURN
+   L2
+    LOCALVARIABLE this Ltest/SandroTest; L0 L2 0
+    LOCALVARIABLE model Ltest/Model; L0 L2 1
+    MAXSTACK = 2
+    MAXLOCALS = 2
+<<<<<<<<<<<<<<
+   24: ALOAD
+   24: ICONST_5
+   24: INVOKEVIRTUAL
+@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>, <span style="color:red">dependArguments= {"test.Model model"}</span>, <span style="color:red">from = "void test.Model#setA (int)"</span>)
+   25: RETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+		<div class="method">
+	<h3><span style="color:green">void test.SandroTest#staticModifier (int)</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">StaticModifier</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Static</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.SandroTest.class</span>, <span style="color:red">name="staticField"</span>, <span style="color:red">dependArguments= {"int a"}</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 20 L0
+    ILOAD 1
+    PUTSTATIC test/SandroTest.staticField : I
+   L1
+    LINENUMBER 21 L1
+    RETURN
+   L2
+    LOCALVARIABLE this Ltest/SandroTest; L0 L2 0
+    LOCALVARIABLE a I L0 L2 1
+    MAXSTACK = 1
+    MAXLOCALS = 2
+<<<<<<<<<<<<<<
+   20: ILOAD
+   20: PUTSTATIC
+@<span style="color:brown">Static</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.SandroTest.class</span>, <span style="color:red">name="staticField"</span>, <span style="color:red">dependArguments= {"int a"}</span>)
+   21: RETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+		<div class="method">
+	<h3><span style="color:green">void test.SandroTest#fieldModifier (int)</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">FieldModifier</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Field</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.SandroTest.class</span>, <span style="color:red">name="field"</span>, <span style="color:red">dependArguments= {"int a"}</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 16 L0
+    ALOAD 0
+    ILOAD 1
+    PUTFIELD test/SandroTest.field : I
+   L1
+    LINENUMBER 17 L1
+    RETURN
+   L2
+    LOCALVARIABLE this Ltest/SandroTest; L0 L2 0
+    LOCALVARIABLE a I L0 L2 1
+    MAXSTACK = 2
+    MAXLOCALS = 2
+<<<<<<<<<<<<<<
+   16: ALOAD
+   16: ILOAD
+   16: PUTFIELD
+@<span style="color:brown">Field</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.SandroTest.class</span>, <span style="color:red">name="field"</span>, <span style="color:red">dependArguments= {"int a"}</span>)
+   17: RETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+</div>
+</div>
+
+	</div>
+	<div class="clazz">
+		<h2>class test.Model</h2>
+<div class="caches">
+	fields: 
+		<p>int test.Model.a: com.google.common.base.Joiner@66ed7a89</p>
+</div>
+<div>
+<div class="members">
+		<div class="method">
+	<h3><span style="color:green">void test.Model#<init> ()</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">Stateless</span></div>
+		
+		<div class="effects">
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 3 L0
+    ALOAD 0
+    INVOKESPECIAL java/lang/Object.<init> ()V
+    RETURN
+   L1
+    LOCALVARIABLE this Ltest/Model; L0 L1 0
+    MAXSTACK = 1
+    MAXLOCALS = 1
+<<<<<<<<<<<<<<
+    3: ALOAD
+    3: INVOKESPECIAL
+    3: RETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+		<div class="method">
+	<h3><span style="color:green">void test.Model#setA (int)</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">FieldModifier</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Field</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Model.class</span>, <span style="color:red">name="a"</span>, <span style="color:red">dependArguments= {"int a"}</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 12 L0
+    ALOAD 0
+    ILOAD 1
+    PUTFIELD test/Model.a : I
+   L1
+    LINENUMBER 13 L1
+    RETURN
+   L2
+    LOCALVARIABLE this Ltest/Model; L0 L2 0
+    LOCALVARIABLE a I L0 L2 1
+    MAXSTACK = 2
+    MAXLOCALS = 2
+<<<<<<<<<<<<<<
+   12: ALOAD
+   12: ILOAD
+   12: PUTFIELD
+@<span style="color:brown">Field</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Model.class</span>, <span style="color:red">name="a"</span>, <span style="color:red">dependArguments= {"int a"}</span>)
+   13: RETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+		<div class="method">
+	<h3><span style="color:green">int test.Model#getA ()</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">Stateful</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Depend</span>(<span style="color:red">dependThis=true, dependFields= {"int test.Model.a"}</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 8 L0
+    ALOAD 0
+    GETFIELD test/Model.a : I
+    IRETURN
+   L1
+    LOCALVARIABLE this Ltest/Model; L0 L1 0
+    MAXSTACK = 1
+    MAXLOCALS = 1
+<<<<<<<<<<<<<<
+    8: ALOAD
+    8: GETFIELD
+    8: IRETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+</div>
+</div>
+
+	</div>
+
+</body>
+</html>

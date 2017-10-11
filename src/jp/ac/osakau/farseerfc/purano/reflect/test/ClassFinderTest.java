@@ -1,14 +1,10 @@
 package jp.ac.osakau.farseerfc.purano.reflect.test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Arrays;
-import java.util.List;
 
 import jp.ac.osakau.farseerfc.purano.reflect.ClassFinder;
 import jp.ac.osakau.farseerfc.purano.reflect.ClassFinderDumpper;
@@ -31,7 +27,7 @@ public class ClassFinderTest {
 		cf.resolveMethods();
 	    File output = new File("/tmp/output-purano.html");
 	    PrintStream ps = new PrintStream(new FileOutputStream(output));
-	    ClassFinderDumpper dumpper = new HtmlDumpper(ps,cf);
+	    ClassFinderDumpper dumpper = new HtmlDumpper(ps, cf, false);
 	    dumpper.dump();
 	}
     
@@ -41,7 +37,7 @@ public class ClassFinderTest {
 		cf.resolveMethods();
 	    File output = new File("/tmp/output-tomcat.html");
 	    PrintStream ps = new PrintStream(new FileOutputStream(output));
-	    ClassFinderDumpper dumpper = new HtmlDumpper(ps,cf);
+	    ClassFinderDumpper dumpper = new HtmlDumpper(ps, cf, false);
 	    dumpper.dump();
 	}
     
@@ -51,7 +47,7 @@ public class ClassFinderTest {
 		cf.resolveMethods();
 	    File output = new File("/tmp/output-htmlparser.html");
 	    PrintStream ps = new PrintStream(new FileOutputStream(output));
-	    ClassFinderDumpper dumpper = new HtmlDumpper(ps,cf);
+	    ClassFinderDumpper dumpper = new HtmlDumpper(ps, cf, false);
 	    dumpper.dump();
 	}
     
@@ -61,7 +57,7 @@ public class ClassFinderTest {
 		cf.resolveMethods();
 	    File output = new File("/tmp/output-argouml.html");
 	    PrintStream ps = new PrintStream(new FileOutputStream(output));
-	    ClassFinderDumpper dumpper = new HtmlDumpper(ps,cf);
+	    ClassFinderDumpper dumpper = new HtmlDumpper(ps, cf, false);
 	    dumpper.dump();
 	}
 }
