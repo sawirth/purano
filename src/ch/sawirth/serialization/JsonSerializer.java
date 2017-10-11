@@ -6,6 +6,7 @@ import ch.sawirth.utils.JavaTypeNameUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jp.ac.osakau.farseerfc.purano.dep.DepEffect;
+import jp.ac.osakau.farseerfc.purano.dep.DepSet;
 import jp.ac.osakau.farseerfc.purano.dep.FieldDep;
 import jp.ac.osakau.farseerfc.purano.effect.AbstractFieldEffect;
 import jp.ac.osakau.farseerfc.purano.effect.ArgumentEffect;
@@ -82,13 +83,15 @@ public class JsonSerializer {
         List<FieldModifier> fieldModifiers = createFieldModifiers(staticEffects.getThisField(), methodRep.isStatic());
         List<FieldModifier> staticFieldModifiers = createStaticFieldModifiers(staticEffects.getStaticField(), methodRep.isStatic());
         List<ArgumentModifier> argumentModifiers = createArgumentModifiers(staticEffects.getArgumentEffects(), methodRep.isStatic());
+        ReturnDependency returnDependency = createReturnDependency(staticEffects.getReturnDep().getDeps());
+
         return new MethodRepresentation(
                 fullMethodName,
                 methodRep.dumpPurity(),
                 methodArguments,
                 fieldModifiers,
                 staticFieldModifiers,
-                argumentModifiers);
+                argumentModifiers, returnDependency);
     }
 
     private List<MethodArgument> createMethodArguments(List<String> parameterTypes, List<LocalVariableNode> localVariableNodes, boolean isStatic) {
@@ -100,11 +103,15 @@ public class JsonSerializer {
         }
 
         for(String parameterType : parameterTypes) {
-            String name = localVariableNodes.get(position).name;
-            if (isStatic) {
-                methodArguments.add(new MethodArgument(position, name, parameterType));
-            } else {
-                methodArguments.add(new MethodArgument(position - 1, name, parameterType));
+            try {
+                String name = localVariableNodes.get(position).name;
+                if (isStatic) {
+                    methodArguments.add(new MethodArgument(position, name, parameterType));
+                } else {
+                    methodArguments.add(new MethodArgument(position - 1, name, parameterType));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             position++;
@@ -161,6 +168,12 @@ public class JsonSerializer {
             String name = fieldDep.getName();
             String owner = fieldDep.getOwner();
             String type = JavaTypeNameUtils.convertToPrimitiveTypeNameIfNecessary(fieldDep.getDesc());
+
+            //somehow Purano adds a stupid L to the type, if it's not a primitive type
+            if (type.startsWith("L") && type.contains("/")) {
+                type = type.substring(1);
+            }
+
             fieldDependencies.add(new FieldDependency(name, owner, type));
         }
 
@@ -179,6 +192,16 @@ public class JsonSerializer {
         }
 
         return argumentModifiers;
+    }
+
+    private ReturnDependency createReturnDependency(DepSet depSet) {
+        boolean dependsOnThis = depSet.getLocals().contains(0);
+        Set<Integer> indexOfDependentArguments = new HashSet<>();
+        indexOfDependentArguments.addAll(depSet.getLocals());
+        indexOfDependentArguments.remove(0);
+        Set<FieldDependency> staticFieldDependencies = createFieldDependencies(depSet.getStatics());
+        Set<FieldDependency> fieldDependencies = createFieldDependencies(depSet.getFields());
+        return new ReturnDependency(staticFieldDependencies, fieldDependencies, indexOfDependentArguments, dependsOnThis);
     }
 }
 
