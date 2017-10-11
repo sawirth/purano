@@ -190,4 +190,14 @@
   <target name="build.modules" depends="init, clean, compile.module.purano" description="build all modules"/>
   
   <target name="all" depends="build.modules" description="build all"/>
+
+  <target name="build jar">
+    <jar destfile="${module.purano.basedir}/purano.jar" basedir="${purano.output.dir}">
+      <zipgroupfileset dir="${module.purano.basedir}/lib" includes="*.jar" excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
+      <manifest>
+        <attribute name="Main-Class" value="jp.ac.osakau.farseerfc.purano.reflect.ClassFinder"/>
+      </manifest>
+    </jar>
+  </target>
+
 </project>

@@ -1,0 +1,64 @@
+[
+  {
+    "fullName": "test.SandroTest",
+    "methodMap": [
+      {
+        "name": "test.SandroTest.modifyIndirect",
+        "purityType": "ArgumentModifier",
+        "methodArguments": [
+          {
+            "position": 1,
+            "name": "model",
+            "type": "test.Model"
+          }
+        ]
+      },
+      {
+        "name": "test.SandroTest.modifyDirect",
+        "purityType": "ArgumentModifier",
+        "methodArguments": [
+          {
+            "position": 1,
+            "name": "model",
+            "type": "test.Model"
+          }
+        ]
+      },
+      {
+        "name": "test.SandroTest.\u003cinit\u003e",
+        "purityType": "Stateless",
+        "methodArguments": []
+      }
+    ]
+  },
+  {
+    "fullName": "test.Model",
+    "methodMap": [
+      {
+        "name": "test.Model.\u003cinit\u003e",
+        "purityType": "Stateless",
+        "methodArguments": []
+      },
+      {
+        "name": "test.Model.getA",
+        "purityType": "Stateful",
+        "methodArguments": []
+      },
+      {
+        "name": "test.Model.setA",
+        "purityType": "FieldModifier",
+        "methodArguments": [
+          {
+            "position": 1,
+            "name": "a",
+            "type": "int"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "fullName": "test",
+    "methodMap": []
+  }
+]

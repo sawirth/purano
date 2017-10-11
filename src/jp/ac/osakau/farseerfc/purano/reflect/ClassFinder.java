@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import ch.sawirth.serialization.JsonSerializer;
 import com.martiansoftware.jsap.*;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +29,8 @@ public class ClassFinder {
 		}
 		log.info("Not found source for {}", name);
 		return null;
-	} 
-	
+	}
+
 
 
 	@Getter final Map<String, ClassRep> classMap= new HashMap<>();
@@ -38,7 +39,7 @@ public class ClassFinder {
     final List<String> prefix;
 
     private static final int MAX_LOAD_PASS = 2;
-    
+
     private final boolean examChangedSignatures = true;
     private final boolean breakForloop = true;
 	private @NotNull final List<String> sourcePrefix;
@@ -48,11 +49,11 @@ public class ClassFinder {
 		findTargetClasses(prefix);
         this.prefix=prefix;
 	}
-	
+
 	public ClassFinder(@NotNull List<String> prefix){
         this(prefix, new ArrayList<String>());
 	}
-	
+
 	public ClassFinder(String string) {
 		this(Arrays.asList(string));
 	}
@@ -73,7 +74,7 @@ public class ClassFinder {
                 loadedClassesTrace.add(allCreps.size());
 			}
             changedMethod = 0;
-            
+
             Set<MethodRep> changedSignatures = new HashSet<>();
 			for (ClassRep crep : allCreps ) {
 				for (MethodRep mrep : crep.getAllMethods()) {
@@ -116,9 +117,9 @@ public class ClassFinder {
         log.info("Loaded Classes: " + Joiner.on(", ").join(loadedClassesTrace));
         log.info("Changed methods: "+Joiner.on(", ").join(changedMethodsTrace));
 	}
-	
+
 	private void findTargetClasses(@NotNull Collection<String> prefixes){
-		
+
 		for(String prefix:prefixes){
 			Reflections reflections = new Reflections( prefix ,new SubTypesScanner(false));
 	        classTargets.addAll( reflections.getStore().getSubTypesOf(Object.class.getName()));
@@ -128,7 +129,7 @@ public class ClassFinder {
 			loadClass(cls);
 		}
 	}
-	
+
 	public ClassRep loadClass(@NotNull String classname){
 		if(!classMap.containsKey(classname)){
 			log.info("Loading {}", classname);
@@ -141,7 +142,6 @@ public class ClassFinder {
 		return classMap.get(classname);
 	}
 
-	
 	private void dumpForResult() {
 		log.info("<<<<<<<<<<<<<<<<< Refactoring Candidates <<<<<<<<<<<<<<<<<<<");
 		int count = 0;
@@ -176,7 +176,7 @@ public class ClassFinder {
 									can.getNode().getStartPosition()
 											+ can.getNode().getLength())));
 					log.info(can.getNode().toString());
-					
+
 					count ++;
 
 				}
@@ -241,7 +241,7 @@ public class ClassFinder {
 			printParameterHelp(jsap);
 		}
 
-		System.out.println("Runtime: " + (System.currentTimeMillis() - start));
+		System.out.println("Runtime: " + (System.currentTimeMillis() - start) + "ms");
 	}
 
 	private static void printParameterHelp(JSAP jsap) {
@@ -257,13 +257,26 @@ public class ClassFinder {
 		cf.dumpForResult();
 
 		//HTML which contains the standard Purano output
-		File htmlOutput = new File(outputPath + "/output.html");
+		File htmlOutput = new File(outputPath + "/Purano-result.html");
 		PrintStream ps = new PrintStream(new FileOutputStream(htmlOutput));
 		ClassFinderDumpper dumpper = new HtmlDumpper(ps,cf, includeNonUserTargets);
 		dumpper.dump();
 
 		//JSON that contains a modified data structure for easier usage to document .java-Files
-//		File jsonOutput = new File(outputPath + "/output.json");
+		Set<ClassRep> classesToSerialize = new HashSet<>(cf.classMap.values());
+		if (!includeNonUserTargets) {
+			classesToSerialize.clear();
 
+			for (ClassRep classRep : cf.classMap.values()) {
+				for (String pkg : packagesToAnalyze) {
+					if (classRep.getName().contains(pkg)) {
+						classesToSerialize.add(classRep);
+					}
+				}
+			}
+		}
+
+		JsonSerializer jsonSerializer = new JsonSerializer(classesToSerialize, outputPath);
+		jsonSerializer.serializeToGson();
 	}
 }
