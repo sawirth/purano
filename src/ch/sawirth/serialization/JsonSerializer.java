@@ -1,21 +1,23 @@
 package ch.sawirth.serialization;
 
 import ch.sawirth.model.ClassRepresentation;
+import ch.sawirth.model.FieldDependency;
 import ch.sawirth.model.MethodArgument;
 import ch.sawirth.model.MethodRepresentation;
+import ch.sawirth.model.modifiers.FieldModifier;
+import ch.sawirth.utils.JavaTypeNameUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import jp.ac.osakau.farseerfc.purano.dep.DepEffect;
+import jp.ac.osakau.farseerfc.purano.dep.FieldDep;
+import jp.ac.osakau.farseerfc.purano.effect.FieldEffect;
 import jp.ac.osakau.farseerfc.purano.reflect.ClassRep;
 import jp.ac.osakau.farseerfc.purano.reflect.MethodRep;
 import org.objectweb.asm.tree.LocalVariableNode;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class JsonSerializer {
 
@@ -76,7 +78,9 @@ public class JsonSerializer {
             }
         }
 
-        return new MethodRepresentation(fullMethodName, methodRep.dumpPurity(), methodArguments);
+        DepEffect staticEffects = methodRep.getStaticEffects();
+        List<FieldModifier> fieldModifiers = createFieldModifiers(staticEffects.getThisField());
+        return new MethodRepresentation(fullMethodName, methodRep.dumpPurity(), methodArguments, fieldModifiers);
     }
 
     private List<MethodArgument> createMethodArguments(List<String> parameterTypes, List<LocalVariableNode> localVariableNodes, boolean isStatic) {
@@ -89,6 +93,37 @@ public class JsonSerializer {
         }
 
         return methodArguments;
+    }
+
+    private List<FieldModifier> createFieldModifiers(Map<String, FieldEffect> fieldEffects) {
+        List<FieldModifier> fieldModifiers = new ArrayList<>();
+        for (FieldEffect effect : fieldEffects.values()) {
+            String name = effect.getName();
+            String type = effect.getDesc();
+            boolean isDirectAccess = effect.getFrom() == null;
+            Set<Integer> dependsOnParameterFromIndex = effect.getDeps().getLocals();
+            Set<FieldDependency> staticFieldDependencies = createFieldDependencies(effect.getDeps().getStatics());
+            Set<FieldDependency> localFieldDependencies = createFieldDependencies(effect.getDeps().getFields());
+
+            fieldModifiers.add(new FieldModifier(name, type, isDirectAccess, dependsOnParameterFromIndex,
+                                                 localFieldDependencies,
+                                                 staticFieldDependencies));
+        }
+
+        return fieldModifiers;
+    }
+
+    private Set<FieldDependency> createFieldDependencies(Set<FieldDep> fieldDeps) {
+        Set<FieldDependency> fieldDependencies = new HashSet<>();
+        for (FieldDep fieldDep: fieldDeps) {
+            String name = fieldDep.getName();
+            String owner = fieldDep.getOwner();
+            String type = JavaTypeNameUtils.convertToPrimitiveTypeNameIfNecessary(fieldDep.getDesc());
+
+            fieldDependencies.add(new FieldDependency(name, owner, type));
+        }
+
+        return fieldDependencies;
     }
 }
 

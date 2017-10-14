@@ -1,15 +1,16 @@
 package test;
 
 public class SandroTest {
-    private int field;
+    private int test;
     private static int staticField;
-    private Model model;
+    private model model;
 
-    public void modifyDirect(Model model) {
-        model.a = 5;
+    public void modifyModel(int param) {
+        this.model.field = param * staticField * this.test;
     }
 
-    public void modifyIndirect(Model model) {
-        model.setA(5);
+    private class model {
+        public int field;
     }
 }
+

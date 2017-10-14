@@ -44,28 +44,28 @@
 		class 3
 	</div>
 	<div class="clazz">
-		method 6
+		method 3
 	</div>
 	<div class="clazz">
 		unknown 0
 	</div>
 	<div class="clazz">
-		stateless 2
+		stateless 1
 	</div>
 	<div class="clazz">
-		stateful 1
+		stateful 0
 	</div>
 	<div class="clazz">
-		modifier 3
+		modifier 2
 	</div>
 	<div class="clazz">
-		fieldM 1
+		fieldM 2
 	</div>
 	<div class="clazz">
 		staticM 0
 	</div>
 	<div class="clazz">
-		argM 2
+		argM 0
 	</div>
 	<div class="clazz">
 		nativeE 0
@@ -164,15 +164,17 @@ package  ;
     LINENUMBER 3 L0
     ALOAD 0
     INVOKESPECIAL java/lang/Object.<init> ()V
-    RETURN
    L1
-    LOCALVARIABLE this Ltest/SandroTest; L0 L1 0
+    LINENUMBER 12 L1
+    RETURN
+   L2
+    LOCALVARIABLE this Ltest/SandroTest; L0 L2 0
     MAXSTACK = 1
     MAXLOCALS = 1
 <<<<<<<<<<<<<<
     3: ALOAD
     3: INVOKESPECIAL
-    3: RETURN
+   12: RETURN
 </code></pre>
 	</div>
 	<div class="source">
@@ -180,7 +182,7 @@ package  ;
 </div>
 
 		<div class="method">
-	<h3><span style="color:green">void test.SandroTest#modifyIndirect (test.Model)</span></h3>
+	<h3><span style="color:green">void test.SandroTest#modifyModel (int)</span></h3>
 	<div class="methodMember">
 		<div class="overrides">
 		</div>
@@ -188,56 +190,11 @@ package  ;
 		<div class="calls">
 		</div>
 		
-		<div class="purity"><span style="color:grey">ArgumentModifier</span></div>
+		<div class="purity"><span style="color:grey">FieldModifier</span></div>
 		
 		<div class="effects">
 			<div class="effect">
-			@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>, <span style="color:red">dependArguments= {"test.Model model"}</span>, <span style="color:red">from = "void test.Model#setA (int)"</span>)
-			</div>
-		</div>
-		
-		<pre><code></code></pre>
-	</div>		
-	<div class="asm">
-<pre><code>   L0
-    LINENUMBER 13 L0
-    ALOAD 1
-    ICONST_5
-    INVOKEVIRTUAL test/Model.setA (I)V
-   L1
-    LINENUMBER 14 L1
-    RETURN
-   L2
-    LOCALVARIABLE this Ltest/SandroTest; L0 L2 0
-    LOCALVARIABLE model Ltest/Model; L0 L2 1
-    MAXSTACK = 2
-    MAXLOCALS = 2
-<<<<<<<<<<<<<<
-   13: ALOAD
-   13: ICONST_5
-   13: INVOKEVIRTUAL
-@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>, <span style="color:red">dependArguments= {"test.Model model"}</span>, <span style="color:red">from = "void test.Model#setA (int)"</span>)
-   14: RETURN
-</code></pre>
-	</div>
-	<div class="source">
-<pre><code></code></pre></div>
-</div>
-
-		<div class="method">
-	<h3><span style="color:green">void test.SandroTest#modifyDirect (test.Model)</span></h3>
-	<div class="methodMember">
-		<div class="overrides">
-		</div>
-		
-		<div class="calls">
-		</div>
-		
-		<div class="purity"><span style="color:grey">ArgumentModifier</span></div>
-		
-		<div class="effects">
-			<div class="effect">
-			@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>)
+			@<span style="color:brown">Field</span>(<span style="color:red">type=test.SandroTest$model.class</span>, <span style="color:red">owner=test.SandroTest.class</span>, <span style="color:red">name="model"</span>, <span style="color:red">dependThis=true</span>, <span style="color:red">dependArguments= {"int param"}</span>, <span style="color:red">dependFields= {"int test.SandroTest.test"}</span>, <span style="color:red">dependStaticFields= {"int test.SandroTest.staticField"}</span>)
 			</div>
 		</div>
 		
@@ -246,22 +203,34 @@ package  ;
 	<div class="asm">
 <pre><code>   L0
     LINENUMBER 9 L0
-    ALOAD 1
-    ICONST_5
-    PUTFIELD test/Model.a : I
+    ALOAD 0
+    GETFIELD test/SandroTest.model : Ltest/SandroTest$model;
+    ILOAD 1
+    GETSTATIC test/SandroTest.staticField : I
+    IMUL
+    ALOAD 0
+    GETFIELD test/SandroTest.test : I
+    IMUL
+    PUTFIELD test/SandroTest$model.field : I
    L1
     LINENUMBER 10 L1
     RETURN
    L2
     LOCALVARIABLE this Ltest/SandroTest; L0 L2 0
-    LOCALVARIABLE model Ltest/Model; L0 L2 1
-    MAXSTACK = 2
+    LOCALVARIABLE param I L0 L2 1
+    MAXSTACK = 3
     MAXLOCALS = 2
 <<<<<<<<<<<<<<
     9: ALOAD
-    9: ICONST_5
+    9: GETFIELD
+    9: ILOAD
+    9: GETSTATIC
+    9: IMUL
+    9: ALOAD
+    9: GETFIELD
+    9: IMUL
     9: PUTFIELD
-@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>)
+@<span style="color:brown">Field</span>(<span style="color:red">type=test.SandroTest$model.class</span>, <span style="color:red">owner=test.SandroTest.class</span>, <span style="color:red">name="model"</span>, <span style="color:red">dependThis=true</span>, <span style="color:red">dependArguments= {"int param"}</span>, <span style="color:red">dependFields= {"int test.SandroTest.test"}</span>, <span style="color:red">dependStaticFields= {"int test.SandroTest.staticField"}</span>)
    10: RETURN
 </code></pre>
 	</div>
@@ -274,51 +243,14 @@ package  ;
 
 	</div>
 	<div class="clazz">
-		<h2>class test.Model</h2>
+		<h2>class test.SandroTest$model</h2>
 <div class="caches">
 	fields: 
-		<p>int test.Model.a: com.google.common.base.Joiner@4e9cba32</p>
 </div>
 <div>
 <div class="members">
 		<div class="method">
-	<h3><span style="color:green">void test.Model#<init> ()</span></h3>
-	<div class="methodMember">
-		<div class="overrides">
-		</div>
-		
-		<div class="calls">
-		</div>
-		
-		<div class="purity"><span style="color:grey">Stateless</span></div>
-		
-		<div class="effects">
-		</div>
-		
-		<pre><code></code></pre>
-	</div>		
-	<div class="asm">
-<pre><code>   L0
-    LINENUMBER 3 L0
-    ALOAD 0
-    INVOKESPECIAL java/lang/Object.<init> ()V
-    RETURN
-   L1
-    LOCALVARIABLE this Ltest/Model; L0 L1 0
-    MAXSTACK = 1
-    MAXLOCALS = 1
-<<<<<<<<<<<<<<
-    3: ALOAD
-    3: INVOKESPECIAL
-    3: RETURN
-</code></pre>
-	</div>
-	<div class="source">
-<pre><code></code></pre></div>
-</div>
-
-		<div class="method">
-	<h3><span style="color:green">void test.Model#setA (int)</span></h3>
+	<h3><span style="color:green">void test.SandroTest$model#<init> (test.SandroTest)</span></h3>
 	<div class="methodMember">
 		<div class="overrides">
 		</div>
@@ -330,7 +262,7 @@ package  ;
 		
 		<div class="effects">
 			<div class="effect">
-			@<span style="color:brown">Field</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Model.class</span>, <span style="color:red">name="a"</span>, <span style="color:red">dependArguments= {"int a"}</span>)
+			@<span style="color:brown">Field</span>(<span style="color:red">type=test.SandroTest.class</span>, <span style="color:red">owner=test.SandroTest$model.class</span>, <span style="color:red">name="this$0"</span>)
 			</div>
 		</div>
 		
@@ -340,61 +272,23 @@ package  ;
 <pre><code>   L0
     LINENUMBER 12 L0
     ALOAD 0
-    ILOAD 1
-    PUTFIELD test/Model.a : I
-   L1
-    LINENUMBER 13 L1
+    ALOAD 1
+    PUTFIELD test/SandroTest$model.this$0 : Ltest/SandroTest;
+    ALOAD 0
+    INVOKESPECIAL java/lang/Object.<init> ()V
     RETURN
-   L2
-    LOCALVARIABLE this Ltest/Model; L0 L2 0
-    LOCALVARIABLE a I L0 L2 1
+   L1
+    LOCALVARIABLE this Ltest/SandroTest$model; L0 L1 0
     MAXSTACK = 2
     MAXLOCALS = 2
 <<<<<<<<<<<<<<
    12: ALOAD
-   12: ILOAD
+   12: ALOAD
    12: PUTFIELD
-@<span style="color:brown">Field</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Model.class</span>, <span style="color:red">name="a"</span>, <span style="color:red">dependArguments= {"int a"}</span>)
-   13: RETURN
-</code></pre>
-	</div>
-	<div class="source">
-<pre><code></code></pre></div>
-</div>
-
-		<div class="method">
-	<h3><span style="color:green">int test.Model#getA ()</span></h3>
-	<div class="methodMember">
-		<div class="overrides">
-		</div>
-		
-		<div class="calls">
-		</div>
-		
-		<div class="purity"><span style="color:grey">Stateful</span></div>
-		
-		<div class="effects">
-			<div class="effect">
-			@<span style="color:brown">Depend</span>(<span style="color:red">dependThis=true, dependFields= {"int test.Model.a"}</span>)
-			</div>
-		</div>
-		
-		<pre><code></code></pre>
-	</div>		
-	<div class="asm">
-<pre><code>   L0
-    LINENUMBER 8 L0
-    ALOAD 0
-    GETFIELD test/Model.a : I
-    IRETURN
-   L1
-    LOCALVARIABLE this Ltest/Model; L0 L1 0
-    MAXSTACK = 1
-    MAXLOCALS = 1
-<<<<<<<<<<<<<<
-    8: ALOAD
-    8: GETFIELD
-    8: IRETURN
+@<span style="color:brown">Field</span>(<span style="color:red">type=test.SandroTest.class</span>, <span style="color:red">owner=test.SandroTest$model.class</span>, <span style="color:red">name="this$0"</span>)
+   12: ALOAD
+   12: INVOKESPECIAL
+   12: RETURN
 </code></pre>
 	</div>
 	<div class="source">
