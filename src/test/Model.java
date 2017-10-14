@@ -1,5 +1,10 @@
 package test;
 
 public class Model {
-    public static int publicInt;
+    public int publicInt;
+    private int privateInt;
+
+    public void setPrivateInt(int privateInt) {
+        this.privateInt = privateInt;
+    }
 }

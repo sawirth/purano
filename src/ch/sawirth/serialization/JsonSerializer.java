@@ -1,16 +1,14 @@
 package ch.sawirth.serialization;
 
-import ch.sawirth.model.ClassRepresentation;
-import ch.sawirth.model.FieldDependency;
-import ch.sawirth.model.MethodArgument;
-import ch.sawirth.model.MethodRepresentation;
-import ch.sawirth.model.modifiers.FieldModifier;
+import ch.sawirth.model.*;
+import ch.sawirth.model.FieldModifier;
 import ch.sawirth.utils.JavaTypeNameUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jp.ac.osakau.farseerfc.purano.dep.DepEffect;
 import jp.ac.osakau.farseerfc.purano.dep.FieldDep;
 import jp.ac.osakau.farseerfc.purano.effect.AbstractFieldEffect;
+import jp.ac.osakau.farseerfc.purano.effect.ArgumentEffect;
 import jp.ac.osakau.farseerfc.purano.effect.FieldEffect;
 import jp.ac.osakau.farseerfc.purano.effect.StaticEffect;
 import jp.ac.osakau.farseerfc.purano.reflect.ClassRep;
@@ -83,12 +81,14 @@ public class JsonSerializer {
         DepEffect staticEffects = methodRep.getStaticEffects();
         List<FieldModifier> fieldModifiers = createFieldModifiers(staticEffects.getThisField(), methodRep.isStatic());
         List<FieldModifier> staticFieldModifiers = createStaticFieldModifiers(staticEffects.getStaticField(), methodRep.isStatic());
+        List<ArgumentModifier> argumentModifiers = createArgumentModifiers(staticEffects.getArgumentEffects(), methodRep.isStatic());
         return new MethodRepresentation(
                 fullMethodName,
                 methodRep.dumpPurity(),
                 methodArguments,
                 fieldModifiers,
-                staticFieldModifiers);
+                staticFieldModifiers,
+                argumentModifiers);
     }
 
     private List<MethodArgument> createMethodArguments(List<String> parameterTypes, List<LocalVariableNode> localVariableNodes, boolean isStatic) {
@@ -156,6 +156,20 @@ public class JsonSerializer {
         }
 
         return fieldDependencies;
+    }
+
+    private List<ArgumentModifier> createArgumentModifiers(Set<ArgumentEffect> argumentEffects, boolean isStaticMethod) {
+        List<ArgumentModifier> argumentModifiers = new ArrayList<>();
+        for (ArgumentEffect effect : argumentEffects) {
+            int position = effect.getArgPos();
+            if (!isStaticMethod) {
+                --position;
+            }
+
+            argumentModifiers.add(new ArgumentModifier(position, effect.getFrom() == null));
+        }
+
+        return argumentModifiers;
     }
 }
 

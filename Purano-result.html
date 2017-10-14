@@ -44,7 +44,7 @@
 		class 3
 	</div>
 	<div class="clazz">
-		method 3
+		method 5
 	</div>
 	<div class="clazz">
 		unknown 0
@@ -56,16 +56,16 @@
 		stateful 0
 	</div>
 	<div class="clazz">
-		modifier 1
+		modifier 3
 	</div>
 	<div class="clazz">
-		fieldM 0
+		fieldM 1
 	</div>
 	<div class="clazz">
-		staticM 1
+		staticM 0
 	</div>
 	<div class="clazz">
-		argM 0
+		argM 2
 	</div>
 	<div class="clazz">
 		nativeE 0
@@ -144,48 +144,6 @@ package  ;
 <div>
 <div class="members">
 		<div class="method">
-	<h3><span style="color:green">void test.SandroTest#modifyOwnStaticField (int)</span></h3>
-	<div class="methodMember">
-		<div class="overrides">
-		</div>
-		
-		<div class="calls">
-		</div>
-		
-		<div class="purity"><span style="color:grey">StaticModifier</span></div>
-		
-		<div class="effects">
-			<div class="effect">
-			@<span style="color:brown">Static</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Model.class</span>, <span style="color:red">name="publicInt"</span>, <span style="color:red">dependArguments= {"int param"}</span>)
-			</div>
-		</div>
-		
-		<pre><code></code></pre>
-	</div>		
-	<div class="asm">
-<pre><code>   L0
-    LINENUMBER 7 L0
-    ILOAD 0
-    PUTSTATIC test/Model.publicInt : I
-   L1
-    LINENUMBER 8 L1
-    RETURN
-   L2
-    LOCALVARIABLE param I L0 L2 0
-    MAXSTACK = 1
-    MAXLOCALS = 1
-<<<<<<<<<<<<<<
-    7: ILOAD
-    7: PUTSTATIC
-@<span style="color:brown">Static</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Model.class</span>, <span style="color:red">name="publicInt"</span>, <span style="color:red">dependArguments= {"int param"}</span>)
-    8: RETURN
-</code></pre>
-	</div>
-	<div class="source">
-<pre><code></code></pre></div>
-</div>
-
-		<div class="method">
 	<h3><span style="color:green">void test.SandroTest#<init> ()</span></h3>
 	<div class="methodMember">
 		<div class="overrides">
@@ -221,6 +179,97 @@ package  ;
 <pre><code></code></pre></div>
 </div>
 
+		<div class="method">
+	<h3><span style="color:green">void test.SandroTest#modifyArgumentIndirectStatic (int, test.Model)</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">ArgumentModifier</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>, <span style="color:red">dependArguments= {"int param"}</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 9 L0
+    ALOAD 1
+    ILOAD 0
+    PUTFIELD test/Model.publicInt : I
+   L1
+    LINENUMBER 10 L1
+    RETURN
+   L2
+    LOCALVARIABLE param I L0 L2 0
+    LOCALVARIABLE model Ltest/Model; L0 L2 1
+    MAXSTACK = 2
+    MAXLOCALS = 2
+<<<<<<<<<<<<<<
+    9: ALOAD
+    9: ILOAD
+    9: PUTFIELD
+@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>, <span style="color:red">dependArguments= {"int param"}</span>)
+   10: RETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+		<div class="method">
+	<h3><span style="color:green">void test.SandroTest#modifyArgumentIndirect (int, test.Model)</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">ArgumentModifier</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>, <span style="color:red">dependArguments= {"test.Model model"}</span>, <span style="color:red">from = "void test.Model#setPrivateInt (int)"</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 5 L0
+    ALOAD 2
+    ILOAD 1
+    INVOKEVIRTUAL test/Model.setPrivateInt (I)V
+   L1
+    LINENUMBER 6 L1
+    RETURN
+   L2
+    LOCALVARIABLE this Ltest/SandroTest; L0 L2 0
+    LOCALVARIABLE param I L0 L2 1
+    LOCALVARIABLE model Ltest/Model; L0 L2 2
+    MAXSTACK = 2
+    MAXLOCALS = 3
+<<<<<<<<<<<<<<
+    5: ALOAD
+    5: ILOAD
+    5: INVOKEVIRTUAL
+@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>, <span style="color:red">dependArguments= {"test.Model model"}</span>, <span style="color:red">from = "void test.Model#setPrivateInt (int)"</span>)
+    6: RETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
 </div>
 </div>
 
@@ -229,6 +278,7 @@ package  ;
 		<h2>class test.Model</h2>
 <div class="caches">
 	fields: 
+		<p>int test.Model.privateInt: com.google.common.base.Joiner@709112ad</p>
 </div>
 <div>
 <div class="members">
@@ -262,6 +312,51 @@ package  ;
     3: ALOAD
     3: INVOKESPECIAL
     3: RETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+		<div class="method">
+	<h3><span style="color:green">void test.Model#setPrivateInt (int)</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">Modifier</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Field</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Model.class</span>, <span style="color:red">name="privateInt"</span>, <span style="color:red">dependArguments= {"int privateInt"}</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 8 L0
+    ALOAD 0
+    ILOAD 1
+    PUTFIELD test/Model.privateInt : I
+   L1
+    LINENUMBER 9 L1
+    RETURN
+   L2
+    LOCALVARIABLE this Ltest/Model; L0 L2 0
+    LOCALVARIABLE privateInt I L0 L2 1
+    MAXSTACK = 2
+    MAXLOCALS = 2
+<<<<<<<<<<<<<<
+    8: ALOAD
+    8: ILOAD
+    8: PUTFIELD
+@<span style="color:brown">Field</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Model.class</span>, <span style="color:red">name="privateInt"</span>, <span style="color:red">dependArguments= {"int privateInt"}</span>)
+    9: RETURN
 </code></pre>
 	</div>
 	<div class="source">

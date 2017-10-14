@@ -1,10 +1,12 @@
 package test;
 
 public class SandroTest {
-    private static int field;
+    public void modifyArgumentIndirect(int param, Model model) {
+        model.setPrivateInt(param);
+    }
 
-    public static void modifyOwnStaticField(int param) {
-        Model.publicInt = param;
+    public static void modifyArgumentIndirectStatic(int param, Model model) {
+        model.publicInt = param;
     }
 }
 

@@ -1,5 +1,9 @@
 [
   {
+    "fullName": "test",
+    "methodMap": []
+  },
+  {
     "fullName": "test.Model",
     "methodMap": [
       {
@@ -7,13 +11,36 @@
         "purityType": "Stateless",
         "methodArguments": [],
         "fieldModifiers": [],
-        "staticFieldModifiers": []
+        "staticFieldModifiers": [],
+        "argumentModifiers": []
+      },
+      {
+        "name": "test.Model.setPrivateInt",
+        "purityType": "Modifier",
+        "methodArguments": [
+          {
+            "position": 0,
+            "name": "privateInt",
+            "type": "int"
+          }
+        ],
+        "fieldModifiers": [
+          {
+            "name": "privateInt",
+            "type": "int",
+            "owner": "test/Model",
+            "hasDirectAccess": true,
+            "dependsOnParameterFromIndex": [
+              0
+            ],
+            "fieldDependencies": [],
+            "staticFieldDependencies": []
+          }
+        ],
+        "staticFieldModifiers": [],
+        "argumentModifiers": []
       }
     ]
-  },
-  {
-    "fullName": "test",
-    "methodMap": []
   },
   {
     "fullName": "test.SandroTest",
@@ -23,30 +50,54 @@
         "purityType": "Stateless",
         "methodArguments": [],
         "fieldModifiers": [],
-        "staticFieldModifiers": []
+        "staticFieldModifiers": [],
+        "argumentModifiers": []
       },
       {
-        "name": "test.SandroTest.modifyOwnStaticField",
-        "purityType": "StaticModifier",
+        "name": "test.SandroTest.modifyArgumentIndirect",
+        "purityType": "ArgumentModifier",
         "methodArguments": [
           {
             "position": 0,
             "name": "param",
             "type": "int"
+          },
+          {
+            "position": 1,
+            "name": "model",
+            "type": "test.Model"
           }
         ],
         "fieldModifiers": [],
-        "staticFieldModifiers": [
+        "staticFieldModifiers": [],
+        "argumentModifiers": [
           {
-            "name": "publicInt",
-            "type": "int",
-            "owner": "test/Model",
-            "hasDirectAccess": true,
-            "dependsOnParameterFromIndex": [
-              0
-            ],
-            "localFieldDependencies": [],
-            "staticFieldDependencies": []
+            "argumentIndex": 1,
+            "hasDirectAccess": false
+          }
+        ]
+      },
+      {
+        "name": "test.SandroTest.modifyArgumentIndirectStatic",
+        "purityType": "ArgumentModifier",
+        "methodArguments": [
+          {
+            "position": 0,
+            "name": "param",
+            "type": "int"
+          },
+          {
+            "position": 1,
+            "name": "model",
+            "type": "test.Model"
+          }
+        ],
+        "fieldModifiers": [],
+        "staticFieldModifiers": [],
+        "argumentModifiers": [
+          {
+            "argumentIndex": 1,
+            "hasDirectAccess": true
           }
         ]
       }
