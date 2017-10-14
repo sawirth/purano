@@ -726,7 +726,9 @@ public class DepInterpreter extends Interpreter<DepValue> implements Opcodes{
 //            effect.addStaticField(sfe.duplicate(rep));
 //        }
         if(callEffect.getStaticField().size()>0){
-            effect.addStaticField(new StaticEffect("","","",new DepSet(), rep));
+            for (StaticEffect staticEffect : callEffect.getStaticField().values())             {
+                effect.addStaticField(new StaticEffect(staticEffect.getDesc(),staticEffect.getOwner(),staticEffect.getName(),new DepSet(), rep));
+            }
         }
 
         for(Effect e :callEffect.getOtherEffects()){

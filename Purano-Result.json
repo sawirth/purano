@@ -1,48 +1,13 @@
 [
   {
-    "fullName": "test.SandroTest",
+    "fullName": "test.Model",
     "methodMap": [
       {
-        "name": "test.SandroTest.\u003cinit\u003e",
+        "name": "test.Model.\u003cinit\u003e",
         "purityType": "Stateless",
         "methodArguments": [],
-        "fieldModifiers": []
-      },
-      {
-        "name": "test.SandroTest.modifyModel",
-        "purityType": "FieldModifier",
-        "methodArguments": [
-          {
-            "position": 1,
-            "name": "param",
-            "type": "int"
-          }
-        ],
-        "fieldModifiers": [
-          {
-            "name": "model",
-            "type": "Ltest/SandroTest$model;",
-            "hasDirectAccess": true,
-            "dependsOnParameterFromIndex": [
-              0,
-              1
-            ],
-            "localFieldDependencies": [
-              {
-                "name": "test",
-                "owner": "test/SandroTest",
-                "desc": "int"
-              }
-            ],
-            "staticFieldDependencies": [
-              {
-                "name": "staticField",
-                "owner": "test/SandroTest",
-                "desc": "int"
-              }
-            ]
-          }
-        ]
+        "fieldModifiers": [],
+        "staticFieldModifiers": []
       }
     ]
   },
@@ -51,19 +16,34 @@
     "methodMap": []
   },
   {
-    "fullName": "test.SandroTest$model",
+    "fullName": "test.SandroTest",
     "methodMap": [
       {
-        "name": "test.SandroTest$model.\u003cinit\u003e",
-        "purityType": "FieldModifier",
+        "name": "test.SandroTest.\u003cinit\u003e",
+        "purityType": "Stateless",
         "methodArguments": [],
-        "fieldModifiers": [
+        "fieldModifiers": [],
+        "staticFieldModifiers": []
+      },
+      {
+        "name": "test.SandroTest.modifyOwnStaticField",
+        "purityType": "StaticModifier",
+        "methodArguments": [
           {
-            "name": "this$0",
-            "type": "Ltest/SandroTest;",
+            "position": 0,
+            "name": "param",
+            "type": "int"
+          }
+        ],
+        "fieldModifiers": [],
+        "staticFieldModifiers": [
+          {
+            "name": "publicInt",
+            "type": "int",
+            "owner": "test/Model",
             "hasDirectAccess": true,
             "dependsOnParameterFromIndex": [
-              1
+              0
             ],
             "localFieldDependencies": [],
             "staticFieldDependencies": []
