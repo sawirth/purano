@@ -133,9 +133,13 @@ public class JsonSerializer {
         boolean hasDirectAccess = effect.getFrom() == null;
         Set<Integer> dependsOnParameterFromIndex = effect.getDeps().getLocals();
         if (!isStaticMethod) {
-            for (Integer integer : dependsOnParameterFromIndex) {
-                dependsOnParameterFromIndex.remove(integer);
-                dependsOnParameterFromIndex.add(--integer);
+            for (Iterator<Integer> it = dependsOnParameterFromIndex.iterator(); it.hasNext() ; ) {
+                //0 is the argument "this" which we are not intersted here as this is also represented as a dependency
+                Integer integer = it.next();
+                it.remove();
+                if (integer > 0) {
+                    dependsOnParameterFromIndex.add(--integer);
+                }
             }
         }
 
