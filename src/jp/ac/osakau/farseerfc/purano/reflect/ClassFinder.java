@@ -257,10 +257,14 @@ public class ClassFinder {
 		cf.dumpForResult();
 
 		//HTML which contains the standard Purano output
-		File htmlOutput = new File(outputPath + "/Purano-result.html");
-		PrintStream ps = new PrintStream(new FileOutputStream(htmlOutput));
-		ClassFinderDumpper dumpper = new HtmlDumpper(ps,cf, includeNonUserTargets);
-		dumpper.dump();
+		try {
+			File htmlOutput = new File(outputPath + "/Purano-result.html");
+			PrintStream ps = new PrintStream(new FileOutputStream(htmlOutput));
+			ClassFinderDumpper dumpper = new HtmlDumpper(ps,cf, includeNonUserTargets);
+			dumpper.dump();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 
 		//JSON that contains a modified data structure for easier usage to document .java-Files
 		Set<ClassRep> classesToSerialize = new HashSet<>(cf.classMap.values());

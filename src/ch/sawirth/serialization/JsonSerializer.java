@@ -94,6 +94,11 @@ public class JsonSerializer {
     private List<MethodArgument> createMethodArguments(List<String> parameterTypes, List<LocalVariableNode> localVariableNodes, boolean isStatic) {
         List<MethodArgument> methodArguments = new ArrayList<>();
         int position = isStatic ? 0 : 1;
+
+        if (localVariableNodes.isEmpty()) {
+            return methodArguments;
+        }
+
         for(String parameterType : parameterTypes) {
             String name = localVariableNodes.get(position).name;
             if (isStatic) {
@@ -133,14 +138,14 @@ public class JsonSerializer {
         boolean hasDirectAccess = effect.getFrom() == null;
         Set<Integer> dependsOnParameterFromIndex = effect.getDeps().getLocals();
         if (!isStaticMethod) {
-            for (Iterator<Integer> it = dependsOnParameterFromIndex.iterator(); it.hasNext() ; ) {
-                //0 is the argument "this" which we are not intersted here as this is also represented as a dependency
-                Integer integer = it.next();
-                it.remove();
+            Set<Integer> modifiedParameters = new HashSet<>();
+            for (Integer integer : dependsOnParameterFromIndex) {
                 if (integer > 0) {
-                    dependsOnParameterFromIndex.add(--integer);
+                    modifiedParameters.add(--integer);
                 }
             }
+
+            dependsOnParameterFromIndex = modifiedParameters;
         }
 
         Set<FieldDependency> staticFieldDependencies = createFieldDependencies(effect.getDeps().getStatics());
