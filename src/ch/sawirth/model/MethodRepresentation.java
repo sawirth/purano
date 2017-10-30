@@ -1,6 +1,7 @@
 package ch.sawirth.model;
 
 import java.util.List;
+import java.util.Set;
 
 public class MethodRepresentation {
     public final String name;
@@ -10,6 +11,7 @@ public class MethodRepresentation {
     public final List<FieldModifier> staticFieldModifiers;
     public final List<ArgumentModifier> argumentModifiers;
     public final ReturnDependency returnDependency;
+    public final Set<NativeEffect> nativeEffects;
 
     public MethodRepresentation(String name,
                                 String purityType,
@@ -17,7 +19,8 @@ public class MethodRepresentation {
                                 List<FieldModifier> fieldModifiers,
                                 List<FieldModifier> staticFieldModifiers,
                                 List<ArgumentModifier> argumentModifiers,
-                                ReturnDependency returnDependency) {
+                                ReturnDependency returnDependency,
+                                Set<NativeEffect> nativeEffects) {
         this.name = name;
         this.purityType = purityType;
         this.methodArguments = methodArguments;
@@ -25,5 +28,6 @@ public class MethodRepresentation {
         this.staticFieldModifiers = staticFieldModifiers;
         this.argumentModifiers = argumentModifiers;
         this.returnDependency = returnDependency;
+        this.nativeEffects = nativeEffects;
     }
 }

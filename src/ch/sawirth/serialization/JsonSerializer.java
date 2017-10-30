@@ -2,19 +2,18 @@ package ch.sawirth.serialization;
 
 import ch.sawirth.model.*;
 import ch.sawirth.model.FieldModifier;
+import ch.sawirth.model.NativeEffect;
 import ch.sawirth.utils.JavaTypeNameUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jp.ac.osakau.farseerfc.purano.dep.DepEffect;
 import jp.ac.osakau.farseerfc.purano.dep.DepSet;
 import jp.ac.osakau.farseerfc.purano.dep.FieldDep;
-import jp.ac.osakau.farseerfc.purano.effect.AbstractFieldEffect;
-import jp.ac.osakau.farseerfc.purano.effect.ArgumentEffect;
-import jp.ac.osakau.farseerfc.purano.effect.FieldEffect;
-import jp.ac.osakau.farseerfc.purano.effect.StaticEffect;
+import jp.ac.osakau.farseerfc.purano.effect.*;
 import jp.ac.osakau.farseerfc.purano.reflect.ClassRep;
 import jp.ac.osakau.farseerfc.purano.reflect.MethodRep;
 import org.objectweb.asm.tree.LocalVariableNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -84,6 +83,7 @@ public class JsonSerializer {
         List<FieldModifier> staticFieldModifiers = createStaticFieldModifiers(staticEffects.getStaticField(), methodRep.isStatic());
         List<ArgumentModifier> argumentModifiers = createArgumentModifiers(staticEffects.getArgumentEffects(), methodRep.isStatic());
         ReturnDependency returnDependency = createReturnDependency(staticEffects.getReturnDep().getDeps());
+        Set<NativeEffect> nativeEffects = createNativeEffects(staticEffects.getOtherEffects());
 
         return new MethodRepresentation(
                 fullMethodName,
@@ -91,7 +91,9 @@ public class JsonSerializer {
                 methodArguments,
                 fieldModifiers,
                 staticFieldModifiers,
-                argumentModifiers, returnDependency);
+                argumentModifiers,
+                returnDependency,
+                nativeEffects);
     }
 
     private List<MethodArgument> createMethodArguments(List<String> parameterTypes, List<LocalVariableNode> localVariableNodes, boolean isStatic) {
@@ -202,6 +204,44 @@ public class JsonSerializer {
         Set<FieldDependency> staticFieldDependencies = createFieldDependencies(depSet.getStatics());
         Set<FieldDependency> fieldDependencies = createFieldDependencies(depSet.getFields());
         return new ReturnDependency(staticFieldDependencies, fieldDependencies, indexOfDependentArguments, dependsOnThis);
+    }
+
+    private Set<NativeEffect> createNativeEffects(Set<Effect> otherEffects) {
+        Set<NativeEffect> nativeEffects = new HashSet<>();
+
+        for (Effect effect : otherEffects) {
+            MethodRep fromMethod = effect.getFrom();
+            MethodInsnNode insnNode = fromMethod.getInsnNode();
+            MethodInsnNode originMethod = findOriginMethod(fromMethod);
+            nativeEffects.add(new NativeEffect(insnNode.owner, insnNode.name, originMethod.owner, originMethod.name));
+        }
+
+        return nativeEffects;
+    }
+
+    private MethodInsnNode findOriginMethod(MethodRep fromMethod) {
+        Set<Effect> otherEffects = fromMethod.getStaticEffects().getOtherEffects();
+
+        //Finding the origin method only works if each method in the callgraph has just one native effect
+        //In this case we abort and just return the best possible option
+        if (otherEffects.size() != 1) {
+            return fromMethod.getInsnNode();
+        }
+
+        for (Effect effect : otherEffects) {
+            if (!(effect instanceof jp.ac.osakau.farseerfc.purano.effect.NativeEffect)) {
+                return fromMethod.getInsnNode();
+            }
+
+
+            if (fromMethod.isNative() && effect.getFrom() == null) {
+                return fromMethod.getInsnNode();
+            }
+
+            return findOriginMethod(effect.getFrom());
+        }
+
+        return fromMethod.getInsnNode();
     }
 }
 
