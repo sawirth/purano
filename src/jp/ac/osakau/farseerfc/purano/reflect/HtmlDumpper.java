@@ -63,14 +63,14 @@ public class HtmlDumpper implements ClassFinderDumpper {
     private static final boolean dumpAsmCode = true;
     private static final boolean dumpEffects = true;
 
-    public HtmlDumpper(PrintStream out, ClassFinder cf, boolean includeNonTargetClasses) throws IOException {
+    public HtmlDumpper(PrintStream out, ClassFinder cf, boolean includeNonTargetClasses, String templatePath) throws IOException {
         this.out = out;
         this.cf = cf;
         this.includeNonTargetClasses = includeNonTargetClasses;
         this.esc = Escaper.getHtml();
         
         this.cfg = new Configuration();
-        cfg.setDirectoryForTemplateLoading(new File("templates"));
+        cfg.setDirectoryForTemplateLoading(new File(templatePath));
         cfg.setObjectWrapper(new DefaultObjectWrapper());
         cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.HTML_DEBUG_HANDLER);
@@ -78,9 +78,12 @@ public class HtmlDumpper implements ClassFinderDumpper {
         
         this.table = new Types(false);
     }
-    
 
-    public List<String> dumpStatics(){
+    public HtmlDumpper(PrintStream out, ClassFinder cf, boolean includeNonTargetClasses) throws IOException {
+        this(out, cf, includeNonTargetClasses, "templates");
+    }
+
+        public List<String> dumpStatics(){
     	List<String> result = new ArrayList<>();
         int method = 0, unknown = 0, stateless = 0, stateful = 0, modifier =0 ;
         int hmethod = 0, hunknown = 0, hstateless = 0, hstateful = 0, hmodifier =0, esln = 0 , esfn=0, en = 0 ;

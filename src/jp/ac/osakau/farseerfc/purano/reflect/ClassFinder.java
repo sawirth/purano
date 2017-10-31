@@ -211,24 +211,33 @@ public class ClassFinder {
 				.setLongFlag("extended")
 				.setHelp("If set non-user classes will be included in the result. Otherwise only classes from the provided package are included.");
 
-		Parameter helpParameter = new FlaggedOption("help")
-				.setRequired(false)
+		Parameter helpParameter = new Switch("help")
 				.setShortFlag('h')
 				.setLongFlag("help")
 				.setHelp("Show help and usage.");
+
+		Parameter templatePathParameter = new FlaggedOption("template")
+				.setStringParser(JSAP.STRING_PARSER)
+				.setDefault("templates")
+				.setRequired(false)
+				.setShortFlag('t')
+				.setLongFlag("template")
+				.setHelp("Path to the template folder for the HTML-Dumper");
 
 		jsap.registerParameter(outputPathParameter);
 		jsap.registerParameter(helpParameter);
 		jsap.registerParameter(showExtendedParameter);
 		jsap.registerParameter(packageNameParameter);
+		jsap.registerParameter(templatePathParameter);
 
 		JSAPResult config = jsap.parse(args);
 
 		if (config.success()) {
 			String[] packagesToAnalyze = config.getStringArray("package");
 			String outputPath = config.getString("output");
+			String templatePath = config.getString("template");
 			boolean includeNonUserClasses = config.getBoolean("extended");
-			analysis(packagesToAnalyze, outputPath, includeNonUserClasses);
+			analysis(packagesToAnalyze, outputPath, includeNonUserClasses, templatePath);
 		} else if (config.getBoolean("help")) {
 			printParameterHelp(jsap);
 		} else {
@@ -251,7 +260,12 @@ public class ClassFinder {
 		System.err.println(jsap.getHelp());
 	}
 
-	private static void analysis(String[] packagesToAnalyze, String outputPath, boolean includeNonUserTargets) throws IOException {
+	private static void analysis(
+			String[] packagesToAnalyze,
+			String outputPath,
+			boolean includeNonUserTargets,
+			String templatePathName) throws IOException
+	{
 		ClassFinder cf = new ClassFinder(Arrays.asList(packagesToAnalyze));
 		cf.resolveMethods();
 		cf.dumpForResult();
@@ -260,7 +274,7 @@ public class ClassFinder {
 		try {
 			File htmlOutput = new File(outputPath + "/Purano-result.html");
 			PrintStream ps = new PrintStream(new FileOutputStream(htmlOutput));
-			ClassFinderDumpper dumpper = new HtmlDumpper(ps,cf, includeNonUserTargets);
+			ClassFinderDumpper dumpper = new HtmlDumpper(ps,cf, includeNonUserTargets, templatePathName);
 			dumpper.dump();
 		} catch (Exception ex) {
 			ex.printStackTrace();
