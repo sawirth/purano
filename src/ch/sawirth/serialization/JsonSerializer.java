@@ -57,6 +57,7 @@ public class JsonSerializer {
 
     private ClassRepresentation createClassRepresentation(ClassRep classRep) {
         HashSet<MethodRepresentation> methodRepresentations = new HashSet<>();
+        String name = classRep.getName();
         for (MethodRep methodRep : classRep.getAllMethods()) {
             methodRepresentations.add(createMethodRepresentation(methodRep));
         }
@@ -81,7 +82,7 @@ public class JsonSerializer {
         List<FieldModifier> fieldModifiers = createFieldModifiers(staticEffects.getThisField(), methodRep.isStatic());
         List<FieldModifier> staticFieldModifiers = createStaticFieldModifiers(staticEffects.getStaticField(), methodRep.isStatic());
         List<ArgumentModifier> argumentModifiers = createArgumentModifiers(staticEffects.getArgumentEffects(), methodRep.isStatic());
-        ReturnDependency returnDependency = createReturnDependency(staticEffects.getReturnDep().getDeps());
+        ReturnDependency returnDependency = createReturnDependency(staticEffects.getReturnDep().getDeps(), methodRep.isStatic());
         Set<NativeEffect> nativeEffects = createNativeEffects(staticEffects.getOtherEffects());
 
         return new MethodRepresentation(
@@ -116,6 +117,7 @@ public class JsonSerializer {
     private FieldModifier createFieldModifier(AbstractFieldEffect effect, boolean isStaticMethod) {
         String name = effect.getName();
         String type = JavaTypeNameUtils.convertToPrimitiveTypeNameIfNecessary(effect.getDesc());
+        type = type.endsWith(";") ? type.replace(";", "") : type;
         String owner = effect.getOwner();
         boolean hasDirectAccess = effect.getFrom() == null;
         Set<Integer> dependsOnParameterFromIndex = effect.getDeps().getLocals();
@@ -169,11 +171,22 @@ public class JsonSerializer {
         return argumentModifiers;
     }
 
-    private ReturnDependency createReturnDependency(DepSet depSet) {
-        boolean dependsOnThis = depSet.getLocals().contains(0);
+    private ReturnDependency createReturnDependency(DepSet depSet, boolean isStatic) {
+        boolean dependsOnThis = depSet.getLocals().contains(0) && !depSet.getFields().isEmpty();
         Set<Integer> indexOfDependentArguments = new HashSet<>();
         indexOfDependentArguments.addAll(depSet.getLocals());
-        indexOfDependentArguments.remove(0);
+
+        if (!isStatic) {
+            indexOfDependentArguments.remove(0);
+            List<Integer> correctedArguments = new ArrayList<>();
+            for (Integer integer : indexOfDependentArguments) {
+                correctedArguments.add(--integer);
+            }
+
+            indexOfDependentArguments.clear();
+            indexOfDependentArguments.addAll(correctedArguments);
+        }
+
         Set<FieldDependency> staticFieldDependencies = createFieldDependencies(depSet.getStatics());
         Set<FieldDependency> fieldDependencies = createFieldDependencies(depSet.getFields());
         return new ReturnDependency(staticFieldDependencies, fieldDependencies, indexOfDependentArguments, dependsOnThis);
