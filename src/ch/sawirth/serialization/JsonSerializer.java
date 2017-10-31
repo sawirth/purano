@@ -30,6 +30,9 @@ public class JsonSerializer {
     }
 
     public void serializeToGson() {
+        System.out.println();
+        System.out.println("Serializing to JSON v1.0");
+
         HashSet<ClassRepresentation> classRepresentations = new HashSet<>();
 
         for (ClassRep classRep : classRepSet) {
@@ -63,18 +66,14 @@ public class JsonSerializer {
 
     private MethodRepresentation createMethodRepresentation(MethodRep methodRep) {
         String fullMethodName = methodRep.getInsnNode().owner + "." + methodRep.getInsnNode().name;
-        List<MethodArgument> methodArguments = new ArrayList<>();
+        List<String> methodArguments = new ArrayList<>();
         if (methodRep.getMethodNode() != null)
         {
             List<LocalVariableNode> localVariables = methodRep.getMethodNode().localVariables;
             List<String> arguments = methodRep.getDesc().getArguments();
 
-            if (methodRep.isInit() && arguments.size() > 0) {
-                arguments.remove(0);
-            }
-
             if (arguments.size() > 0) {
-                methodArguments.addAll(createMethodArguments(arguments, localVariables, methodRep.isStatic()));
+                methodArguments.addAll(arguments);
             }
         }
 
@@ -94,32 +93,6 @@ public class JsonSerializer {
                 argumentModifiers,
                 returnDependency,
                 nativeEffects);
-    }
-
-    private List<MethodArgument> createMethodArguments(List<String> parameterTypes, List<LocalVariableNode> localVariableNodes, boolean isStatic) {
-        List<MethodArgument> methodArguments = new ArrayList<>();
-        int position = isStatic ? 0 : 1;
-
-        if (localVariableNodes.isEmpty()) {
-            return methodArguments;
-        }
-
-        for(String parameterType : parameterTypes) {
-            try {
-                String name = localVariableNodes.get(position).name;
-                if (isStatic) {
-                    methodArguments.add(new MethodArgument(position, name, parameterType));
-                } else {
-                    methodArguments.add(new MethodArgument(position - 1, name, parameterType));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            position++;
-        }
-
-        return methodArguments;
     }
 
     private List<FieldModifier> createFieldModifiers(Map<String, FieldEffect> fieldEffects, boolean isStaticMethod) {
@@ -211,15 +184,17 @@ public class JsonSerializer {
 
         for (Effect effect : otherEffects) {
             MethodRep fromMethod = effect.getFrom();
-            MethodInsnNode insnNode = fromMethod.getInsnNode();
-            MethodInsnNode originMethod = findOriginMethod(fromMethod);
-            nativeEffects.add(new NativeEffect(insnNode.owner, insnNode.name, originMethod.owner, originMethod.name));
+            if (fromMethod != null) {
+                MethodInsnNode insnNode = fromMethod.getInsnNode();
+                MethodInsnNode originMethod = findNativeOrigin(fromMethod);
+                nativeEffects.add(new NativeEffect(insnNode.owner, insnNode.name, originMethod.owner, originMethod.name));
+            }
         }
 
         return nativeEffects;
     }
 
-    private MethodInsnNode findOriginMethod(MethodRep fromMethod) {
+    private MethodInsnNode findNativeOrigin(MethodRep fromMethod) {
         Set<Effect> otherEffects = fromMethod.getStaticEffects().getOtherEffects();
 
         //Finding the origin method only works if each method in the callgraph has just one native effect
@@ -233,15 +208,15 @@ public class JsonSerializer {
                 return fromMethod.getInsnNode();
             }
 
-
             if (fromMethod.isNative() && effect.getFrom() == null) {
                 return fromMethod.getInsnNode();
             }
 
-            return findOriginMethod(effect.getFrom());
+            return findNativeOrigin(effect.getFrom());
         }
 
         return fromMethod.getInsnNode();
     }
 }
+
 

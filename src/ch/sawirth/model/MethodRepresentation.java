@@ -6,7 +6,7 @@ import java.util.Set;
 public class MethodRepresentation {
     public final String name;
     public final String purityType;
-    public final List<MethodArgument> methodArguments;
+    public final List<String> methodArguments;
     public final List<FieldModifier> fieldModifiers;
     public final List<FieldModifier> staticFieldModifiers;
     public final List<ArgumentModifier> argumentModifiers;
@@ -15,7 +15,7 @@ public class MethodRepresentation {
 
     public MethodRepresentation(String name,
                                 String purityType,
-                                List<MethodArgument> methodArguments,
+                                List<String> methodArguments,
                                 List<FieldModifier> fieldModifiers,
                                 List<FieldModifier> staticFieldModifiers,
                                 List<ArgumentModifier> argumentModifiers,
