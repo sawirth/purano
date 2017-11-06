@@ -71,6 +71,7 @@ public class DepInterpreter extends Interpreter<DepValue> implements Opcodes{
 	private final DepEffect methodEffect;
 	private @Getter @Setter DepEffect currentFrameEffect;
 	private final MethodRep method;
+	private String owner;
 	
 	private static final boolean findCacheSemantic = true;
 	private static final boolean findNative = false;
@@ -84,6 +85,7 @@ public class DepInterpreter extends Interpreter<DepValue> implements Opcodes{
 		this.methodEffect = effect;
 		this.method = method;
 		this.classFinder = null;
+        setOwner();
 	}
 	
 	public DepInterpreter(DepEffect effect, MethodRep method, ClassFinder classFinder) {
@@ -91,9 +93,15 @@ public class DepInterpreter extends Interpreter<DepValue> implements Opcodes{
 		this.methodEffect = effect;
 		this.method = method;
 		this.classFinder = classFinder;
+		setOwner();
 	}
-	
-	
+
+	private void setOwner() {
+        MethodInsnNode insnNode = this.method.getInsnNode();
+        if (insnNode != null) {
+            this.owner = insnNode.owner + "#" + insnNode.name;
+        }
+    }
     
     private String opcode2string(int opcode){
     	List<String> result = new ArrayList<>();
@@ -241,8 +249,8 @@ public class DepInterpreter extends Interpreter<DepValue> implements Opcodes{
                 if (v == null) {
                     throw new AssertionError("Cannot get static member from type void");
                 }
-                v.getDeps().getStatics().add(new FieldDep(fin.desc,fin.owner,fin.name));
-				v.getLvalue().getStatics().add(new FieldDep(fin.desc, fin.owner, fin.name));
+                v.getDeps().getStatics().add(new FieldDep(fin.desc,fin.owner,fin.name, this.owner));
+				v.getLvalue().getStatics().add(new FieldDep(fin.desc, fin.owner, fin.name, this.owner));
 				return v;
 			}
 		case NEW:
@@ -380,19 +388,19 @@ public class DepInterpreter extends Interpreter<DepValue> implements Opcodes{
 //					new StaticEffect(fin.desc, fin.owner, fin.name,
 //							value.getDeps(),null));
             DepValue dv = new DepValue(value);
-            dv.getLvalue().getStatics().add(new FieldDep(fin.desc,fin.owner,fin.name));
+            dv.getLvalue().getStatics().add(new FieldDep(fin.desc,fin.owner,fin.name, this.owner));
             dv.modify(effect, currentFrameEffect, method, null);
 			return null;
 		}
         case GETFIELD:{
         	FieldInsnNode fin = (FieldInsnNode) insn;
         	DepValue v =new DepValue(Type.getType(fin.desc), value.getDeps());
-        	v.getDeps().getFields().add(new FieldDep(fin.desc,fin.owner,fin.name));
+        	v.getDeps().getFields().add(new FieldDep(fin.desc,fin.owner,fin.name, this.owner));
 
             if(value.getLvalue().isThis()){
                 if(!method.isStatic() &&value.getLvalue().isThis()){
                     // when we try to get this.f
-                    v.getLvalue().getFields().add(new FieldDep(fin.desc,fin.owner,fin.name));
+                    v.getLvalue().getFields().add(new FieldDep(fin.desc,fin.owner,fin.name, this.owner));
                 }else{
                     // when we try to get this.f.g
                     v.getLvalue().getLocals().add(0); // this
@@ -574,14 +582,14 @@ public class DepInterpreter extends Interpreter<DepValue> implements Opcodes{
             		if(value2.isConstant()){
             			return null;
             		}
-	            	FieldDep fd = new FieldDep(fin.desc, fin.owner, fin.name);
+	            	FieldDep fd = new FieldDep(fin.desc, fin.owner, fin.name, this.owner);
 	            	if(method.addCacheSemantic(fd)){
 	            		return null;
 	            	}
             	}
                 DepValue dv = new DepValue(value2.getType(), value2.getDeps());
                 dv.getLvalue().merge(value1.getLvalue());
-                dv.getLvalue().getFields().add(new FieldDep(fin.desc, fin.owner, fin.name));
+                dv.getLvalue().getFields().add(new FieldDep(fin.desc, fin.owner, fin.name, this.owner));
                 dv.modify(effect, currentFrameEffect, method, null);
             } else {
                 // sth.name == v2
@@ -765,7 +773,8 @@ public class DepInterpreter extends Interpreter<DepValue> implements Opcodes{
             if(!method.isStatic() && obj.getLvalue().isThis()){
                 DepValue dv = new DepValue(obj);
                 for(FieldEffect tfe: callEffect.getThisField().values()){
-                    dv.getLvalue().getFields().add(new FieldDep(tfe.getDesc(),tfe.getOwner(),tfe.getName()));
+                    String owner = tfe.getOwner();
+                    dv.getLvalue().getFields().add(new FieldDep(tfe.getDesc(),tfe.getOwner(),tfe.getName(), this.owner));
                 }
                 dv.modify(effect, currentFrameEffect,method,rep);
             }else if(!method.isStatic()){

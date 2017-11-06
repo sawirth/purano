@@ -11,6 +11,8 @@ public @Data class FieldDep {
     private final String owner;
 	@NotNull
     private final String name;
+
+	private final String origin;
 	
 	public String dump(@NotNull Types table){
 		return String.format("%s %s.%s", 

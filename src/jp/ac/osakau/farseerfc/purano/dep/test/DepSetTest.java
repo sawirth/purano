@@ -12,16 +12,16 @@ public class DepSetTest {
 	@Test
 	public void test() {
 		DepSet ds1=new DepSet();
-		ds1.getFields().add(new FieldDep("A","B","C"));
+		ds1.getFields().add(new FieldDep("A","B","C", "D"));
 		ds1.getLocals().add(1);
 		
 		DepSet ds2=new DepSet();
-		ds2.getFields().add(new FieldDep("A","B","C"));
+		ds2.getFields().add(new FieldDep("A","B","C", "D"));
 		ds2.getLocals().add(1);
 		assertEquals(ds1,ds2);
 		ds2.getLocals().add(1);
 		assertEquals(ds1,ds2);
-		ds2.getFields().add(new FieldDep("A","B","C"));
+		ds2.getFields().add(new FieldDep("A","B","C", "D"));
 		assertEquals(ds1,ds2);
 		
 		ds2.getLocals().add(2);
