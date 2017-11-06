@@ -3,6 +3,7 @@ package ch.sawirth.serialization;
 import ch.sawirth.model.*;
 import ch.sawirth.model.FieldModifier;
 import ch.sawirth.model.NativeEffect;
+import ch.sawirth.utils.FindDynamicOnlyEffectsHelper;
 import ch.sawirth.utils.JavaTypeNameUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,8 +13,8 @@ import jp.ac.osakau.farseerfc.purano.dep.FieldDep;
 import jp.ac.osakau.farseerfc.purano.effect.*;
 import jp.ac.osakau.farseerfc.purano.reflect.ClassRep;
 import jp.ac.osakau.farseerfc.purano.reflect.MethodRep;
-import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -57,7 +58,6 @@ public class JsonSerializer {
 
     private ClassRepresentation createClassRepresentation(ClassRep classRep) {
         HashSet<MethodRepresentation> methodRepresentations = new HashSet<>();
-        String name = classRep.getName();
         for (MethodRep methodRep : classRep.getAllMethods()) {
             methodRepresentations.add(createMethodRepresentation(methodRep));
         }
@@ -68,9 +68,7 @@ public class JsonSerializer {
     private MethodRepresentation createMethodRepresentation(MethodRep methodRep) {
         String fullMethodName = methodRep.getInsnNode().owner + "." + methodRep.getInsnNode().name;
         List<String> methodArguments = new ArrayList<>();
-        if (methodRep.getMethodNode() != null)
-        {
-            List<LocalVariableNode> localVariables = methodRep.getMethodNode().localVariables;
+        if (methodRep.getMethodNode() != null) {
             List<String> arguments = methodRep.getDesc().getArguments();
 
             if (arguments.size() > 0) {
@@ -78,12 +76,30 @@ public class JsonSerializer {
             }
         }
 
+        String classOwner = methodRep.getInsnNode().owner;
         DepEffect staticEffects = methodRep.getStaticEffects();
-        List<FieldModifier> fieldModifiers = createFieldModifiers(staticEffects.getThisField(), methodRep.isStatic());
-        List<FieldModifier> staticFieldModifiers = createStaticFieldModifiers(staticEffects.getStaticField(), methodRep.isStatic());
-        List<ArgumentModifier> argumentModifiers = createArgumentModifiers(staticEffects.getArgumentEffects(), methodRep.isStatic());
-        ReturnDependency returnDependency = createReturnDependency(staticEffects.getReturnDep().getDeps(), methodRep.isStatic());
-        Set<NativeEffect> nativeEffects = createNativeEffects(staticEffects.getOtherEffects());
+        DepEffect dynamicEffects = methodRep.getDynamicEffects();
+        DepEffect dynamicOnlyEffects = FindDynamicOnlyEffectsHelper.getDynamicDepEffect(staticEffects, dynamicEffects);
+
+        List<FieldModifier> fieldModifiers = createFieldModifiers(staticEffects.getThisField(),
+                                                                  dynamicOnlyEffects.getThisField(),
+                                                                  methodRep.isStatic(),
+                                                                  classOwner);
+
+        List<FieldModifier> staticFieldModifiers = createStaticFieldModifiers(staticEffects.getStaticField(),
+                                                                              dynamicOnlyEffects.getStaticField(),
+                                                                              methodRep.isStatic());
+
+        List<ArgumentModifier> argumentModifiers = createArgumentModifiers(staticEffects.getArgumentEffects(),
+                                                                           dynamicOnlyEffects.getArgumentEffects(),
+                                                                           methodRep.isStatic());
+
+        ReturnDependency returnDependency = createReturnDependency(staticEffects.getReturnDep().getDeps(),
+                                                                   dynamicOnlyEffects.getReturnDep().getDeps(),
+                                                                   methodRep.isStatic(),
+                                                                   classOwner);
+
+        Set<NativeEffect> nativeEffects = createNativeEffects(staticEffects.getOtherEffects(), dynamicOnlyEffects.getOtherEffects());
 
         return new MethodRepresentation(
                 fullMethodName,
@@ -96,25 +112,42 @@ public class JsonSerializer {
                 nativeEffects);
     }
 
-    private List<FieldModifier> createFieldModifiers(Map<String, FieldEffect> fieldEffects, boolean isStaticMethod) {
+    private List<FieldModifier> createFieldModifiers(
+            Map<String, FieldEffect> staticFieldEffects,
+            Map<String, FieldEffect> dynamicFieldEffects,
+            boolean isStaticMethod,
+            String classOwner) {
         List<FieldModifier> fieldModifiers = new ArrayList<>();
-        for (FieldEffect effect : fieldEffects.values()) {
-            fieldModifiers.add(createFieldModifier(effect, isStaticMethod));
+        for (FieldEffect effect : staticFieldEffects.values()) {
+            fieldModifiers.add(createFieldModifier(effect, isStaticMethod, classOwner, false));
+        }
+
+        for (FieldEffect effect : dynamicFieldEffects.values()) {
+            fieldModifiers.add(createFieldModifier(effect, isStaticMethod, classOwner, true));
         }
 
         return fieldModifiers;
     }
 
-    private List<FieldModifier> createStaticFieldModifiers(Map<String, StaticEffect> staticEffects, boolean isStaticMethod) {
+    private List<FieldModifier> createStaticFieldModifiers(Map<String, StaticEffect> staticEffects,
+                                                           Map<String, StaticEffect> dynamicEffects,
+                                                           boolean isStaticMethod) {
         List<FieldModifier> staticFieldModifiers = new ArrayList<>();
         for (StaticEffect effect : staticEffects.values()) {
-            staticFieldModifiers.add(createFieldModifier(effect, isStaticMethod));
+            staticFieldModifiers.add(createFieldModifier(effect, isStaticMethod, "", false));
+        }
+
+        for (StaticEffect effect : dynamicEffects.values()) {
+            staticFieldModifiers.add(createFieldModifier(effect, isStaticMethod, "", true));
         }
 
         return staticFieldModifiers;
     }
 
-    private FieldModifier createFieldModifier(AbstractFieldEffect effect, boolean isStaticMethod) {
+    private FieldModifier createFieldModifier(AbstractFieldEffect effect,
+                                              boolean isStaticMethod,
+                                              String classOwner,
+                                              boolean isDynamicEffect) {
         String name = effect.getName();
         String type = JavaTypeNameUtils.convertToPrimitiveTypeNameIfNecessary(effect.getDesc());
         type = type.endsWith(";") ? type.replace(";", "") : type;
@@ -132,18 +165,29 @@ public class JsonSerializer {
             dependsOnParameterFromIndex = modifiedParameters;
         }
 
-        Set<FieldDependency> staticFieldDependencies = createFieldDependencies(effect.getDeps().getStatics());
-        Set<FieldDependency> localFieldDependencies = createFieldDependencies(effect.getDeps().getFields());
-        return new FieldModifier(name, type,
+        Set<FieldDependency> staticFieldDependencies = createFieldDependencies(effect.getDeps().getStatics(),
+                                                                               classOwner,
+                                                                               isDynamicEffect);
+        Set<FieldDependency> localFieldDependencies = createFieldDependencies(effect.getDeps().getFields(),
+                                                                              classOwner,
+                                                                              isDynamicEffect);
+        return new FieldModifier(name,
+                                 type,
                                  owner,
-                                 hasDirectAccess, dependsOnParameterFromIndex, localFieldDependencies, staticFieldDependencies);
+                                 hasDirectAccess,
+                                 dependsOnParameterFromIndex,
+                                 localFieldDependencies,
+                                 staticFieldDependencies);
     }
 
-    private Set<FieldDependency> createFieldDependencies(Set<FieldDep> fieldDeps) {
+    private Set<FieldDependency> createFieldDependencies(Set<FieldDep> fieldDeps,
+                                                         String classOwner,
+                                                         boolean isDynamicEffect) {
         Set<FieldDependency> fieldDependencies = new HashSet<>();
-        for (FieldDep fieldDep: fieldDeps) {
+        for (FieldDep fieldDep : fieldDeps) {
             String name = fieldDep.getName();
             String owner = fieldDep.getOwner();
+            owner = owner.replace('/', '.');
             String type = JavaTypeNameUtils.convertToPrimitiveTypeNameIfNecessary(fieldDep.getDesc());
 
             //somehow Purano adds a stupid L to the type, if it's not a primitive type
@@ -151,30 +195,52 @@ public class JsonSerializer {
                 type = type.substring(1);
             }
 
-            fieldDependencies.add(new FieldDependency(name, owner, type));
+            if (classOwner.equals(owner)) {
+                fieldDependencies.add(new FieldDependency(name, owner, type, true, isDynamicEffect));
+            } else {
+                fieldDependencies.add(new FieldDependency(name, owner, type, false, isDynamicEffect));
+            }
         }
 
         return fieldDependencies;
     }
 
-    private List<ArgumentModifier> createArgumentModifiers(Set<ArgumentEffect> argumentEffects, boolean isStaticMethod) {
+    private List<ArgumentModifier> createArgumentModifiers(Set<ArgumentEffect> staticArgumentEffects,
+                                                           Set<ArgumentEffect> dynamicArgumentEffects,
+                                                           boolean isStaticMethod) {
         List<ArgumentModifier> argumentModifiers = new ArrayList<>();
-        for (ArgumentEffect effect : argumentEffects) {
+        for (ArgumentEffect effect : staticArgumentEffects) {
             int position = effect.getArgPos();
             if (!isStaticMethod) {
                 --position;
             }
 
-            argumentModifiers.add(new ArgumentModifier(position, effect.getFrom() == null));
+            argumentModifiers.add(new ArgumentModifier(position, effect.getFrom() == null, false));
+        }
+
+        for (ArgumentEffect effect : dynamicArgumentEffects) {
+            int position = effect.getArgPos();
+            if (!isStaticMethod) {
+                --position;
+            }
+
+            String owner = effect.getFrom().getInsnNode().owner;
+
+            argumentModifiers.add(
+                    new ArgumentModifier(position, effect.getFrom() == null, true, owner));
         }
 
         return argumentModifiers;
     }
 
-    private ReturnDependency createReturnDependency(DepSet depSet, boolean isStatic) {
-        boolean dependsOnThis = depSet.getLocals().contains(0) && !depSet.getFields().isEmpty();
+    private ReturnDependency createReturnDependency(DepSet staticDepSet,
+                                                    DepSet dynamicDepSet,
+                                                    boolean isStatic,
+                                                    String classOwner)
+    {
+        boolean dependsOnThis = staticDepSet.getLocals().contains(0) && !staticDepSet.getFields().isEmpty();
         Set<Integer> indexOfDependentArguments = new HashSet<>();
-        indexOfDependentArguments.addAll(depSet.getLocals());
+        indexOfDependentArguments.addAll(staticDepSet.getLocals());
 
         if (!isStatic) {
             indexOfDependentArguments.remove(0);
@@ -187,20 +253,55 @@ public class JsonSerializer {
             indexOfDependentArguments.addAll(correctedArguments);
         }
 
-        Set<FieldDependency> staticFieldDependencies = createFieldDependencies(depSet.getStatics());
-        Set<FieldDependency> fieldDependencies = createFieldDependencies(depSet.getFields());
-        return new ReturnDependency(staticFieldDependencies, fieldDependencies, indexOfDependentArguments, dependsOnThis);
+        Set<FieldDependency> staticFieldDependencies = createFieldDependencies(staticDepSet.getStatics(),
+                                                                               classOwner,
+                                                                               false);
+
+        Set<FieldDependency> fieldDependencies = createFieldDependencies(staticDepSet.getFields(), classOwner, false);
+
+        Set<FieldDependency> dynamicStaticFieldDependencies = createFieldDependencies(dynamicDepSet.getStatics(),
+                                                                                      classOwner,
+                                                                                      true);
+
+        Set<FieldDependency> dynamicFieldDependencies = createFieldDependencies(dynamicDepSet.getFields(),
+                                                                                classOwner,
+                                                                                true);
+
+        fieldDependencies.addAll(dynamicFieldDependencies);
+        staticFieldDependencies.addAll(dynamicStaticFieldDependencies);
+
+        return new ReturnDependency(staticFieldDependencies,
+                                    fieldDependencies,
+                                    indexOfDependentArguments,
+                                    dependsOnThis);
     }
 
-    private Set<NativeEffect> createNativeEffects(Set<Effect> otherEffects) {
+    private Set<NativeEffect> createNativeEffects(Set<Effect> staticOtherEffects, Set<Effect> dynamicOtherEffects) {
         Set<NativeEffect> nativeEffects = new HashSet<>();
 
-        for (Effect effect : otherEffects) {
+        for (Effect effect : staticOtherEffects) {
             MethodRep fromMethod = effect.getFrom();
             if (fromMethod != null) {
                 MethodInsnNode insnNode = fromMethod.getInsnNode();
                 MethodInsnNode originMethod = findNativeOrigin(fromMethod);
-                nativeEffects.add(new NativeEffect(insnNode.owner, insnNode.name, originMethod.owner, originMethod.name));
+                nativeEffects.add(new NativeEffect(insnNode.owner,
+                                                   insnNode.name,
+                                                   originMethod.owner,
+                                                   originMethod.name,
+                                                   false));
+            }
+        }
+
+        for (Effect effect : dynamicOtherEffects) {
+            MethodRep fromMethod = effect.getFrom();
+            if (fromMethod != null) {
+                MethodInsnNode insnNode = fromMethod.getInsnNode();
+                MethodInsnNode originMethod = findNativeOrigin(fromMethod);
+                nativeEffects.add(new NativeEffect(insnNode.owner,
+                                                   insnNode.name,
+                                                   originMethod.owner,
+                                                   originMethod.name,
+                                                   true));
             }
         }
 

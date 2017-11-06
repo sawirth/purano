@@ -8,10 +8,10 @@ import jp.ac.osakau.farseerfc.purano.effect.OtherFieldEffect;
 import jp.ac.osakau.farseerfc.purano.effect.StaticEffect;
 
 public interface IDepEffect {
-	public void addThisField(FieldEffect tfe);
-	public void addOtherField(OtherFieldEffect ofe);
-	public void addOtherEffect(Effect oe);
-	public void addCallEffect(CallEffect ce);
-	public void addStaticField(StaticEffect sfe);
-	public void addArgumentEffect(ArgumentEffect ae);
+	void addThisField(FieldEffect tfe);
+	void addOtherField(OtherFieldEffect ofe);
+	void addOtherEffect(Effect oe);
+	void addCallEffect(CallEffect ce);
+	void addStaticField(StaticEffect sfe);
+	void addArgumentEffect(ArgumentEffect ae);
 }

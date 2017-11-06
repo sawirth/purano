@@ -7,11 +7,9 @@ import jp.ac.osakau.farseerfc.purano.reflect.MethodRep;
 import jp.ac.osakau.farseerfc.purano.util.Escaper;
 import jp.ac.osakau.farseerfc.purano.util.Types;
 import lombok.Getter;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Type;
-
 import java.util.*;
 
 //@EqualsAndHashCode(callSuper=false)
@@ -25,8 +23,6 @@ public class DepEffect implements IDepEffect {
 	private final @Getter Set<LocalVariableEffect> localVariableEffects = new HashSet<>();
 	private final @Getter Set<CallEffect> callEffects = new HashSet<>();
 	private final @Getter Set<Effect> otherEffects = new HashSet<>();
-	
-
 
 	public void merge(@NotNull DepEffect other,MethodRep from){
 		returnDep.getLvalue().merge(other.returnDep.getLvalue());
