@@ -241,6 +241,7 @@ public class JsonSerializer {
         boolean dependsOnThis = staticDepSet.getLocals().contains(0) && !staticDepSet.getFields().isEmpty();
         Set<Integer> indexOfDependentArguments = new HashSet<>();
         indexOfDependentArguments.addAll(staticDepSet.getLocals());
+        indexOfDependentArguments.addAll(dynamicDepSet.getLocals());
 
         if (!isStatic) {
             indexOfDependentArguments.remove(0);
