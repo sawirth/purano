@@ -97,7 +97,8 @@ public class JsonSerializer {
         ReturnDependency returnDependency = createReturnDependency(staticEffects.getReturnDep().getDeps(),
                                                                    dynamicOnlyEffects.getReturnDep().getDeps(),
                                                                    methodRep.isStatic(),
-                                                                   classOwner);
+                                                                   classOwner,
+                                                                   methodArguments.size());
 
         Set<NativeEffect> nativeEffects = createNativeEffects(staticEffects.getOtherEffects(), dynamicOnlyEffects.getOtherEffects());
 
@@ -236,7 +237,8 @@ public class JsonSerializer {
     private ReturnDependency createReturnDependency(DepSet staticDepSet,
                                                     DepSet dynamicDepSet,
                                                     boolean isStatic,
-                                                    String classOwner)
+                                                    String classOwner,
+                                                    int numberOfArguments)
     {
         boolean dependsOnThis = staticDepSet.getLocals().contains(0) && !staticDepSet.getFields().isEmpty();
         Set<Integer> indexOfDependentArguments = new HashSet<>();
@@ -252,6 +254,13 @@ public class JsonSerializer {
 
             indexOfDependentArguments.clear();
             indexOfDependentArguments.addAll(correctedArguments);
+        }
+
+        Set<Integer> correctedIndices = new HashSet<>();
+        for (Integer integer : indexOfDependentArguments) {
+            if (integer < numberOfArguments) {
+                correctedIndices.add(integer);
+            }
         }
 
         Set<FieldDependency> staticFieldDependencies = createFieldDependencies(staticDepSet.getStatics(),
@@ -273,7 +282,7 @@ public class JsonSerializer {
 
         return new ReturnDependency(staticFieldDependencies,
                                     fieldDependencies,
-                                    indexOfDependentArguments,
+                                    correctedIndices,
                                     dependsOnThis);
     }
 
