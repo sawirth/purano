@@ -1,106 +1,139 @@
 [
   {
-    "fullName": "test",
-    "methodMap": []
-  },
-  {
-    "fullName": "test.Model",
+    "fullName": "test.Test",
     "methodMap": [
       {
-        "name": "test.Model.\u003cinit\u003e",
-        "purityType": "Stateless",
+        "name": "test.Test.callNative",
+        "purityType": "StaticModifier",
         "methodArguments": [],
         "fieldModifiers": [],
-        "staticFieldModifiers": [],
-        "argumentModifiers": []
-      },
-      {
-        "name": "test.Model.setPrivateInt",
-        "purityType": "Modifier",
-        "methodArguments": [
+        "staticFieldModifiers": [
           {
-            "position": 0,
-            "name": "privateInt",
-            "type": "int"
-          }
-        ],
-        "fieldModifiers": [
-          {
-            "name": "privateInt",
+            "name": "staticInt",
             "type": "int",
-            "owner": "test/Model",
+            "owner": "test/Test",
             "hasDirectAccess": true,
-            "dependsOnParameterFromIndex": [
-              0
-            ],
+            "dependsOnParameterFromIndex": [],
             "fieldDependencies": [],
             "staticFieldDependencies": []
           }
         ],
-        "staticFieldModifiers": [],
-        "argumentModifiers": []
-      }
-    ]
-  },
-  {
-    "fullName": "test.SandroTest",
-    "methodMap": [
+        "argumentModifiers": [],
+        "returnDependency": {
+          "staticFieldDependencies": [],
+          "fieldDependencies": [],
+          "indexOfDependentArguments": [],
+          "dependsOnThis": false
+        },
+        "nativeEffects": []
+      },
       {
-        "name": "test.SandroTest.\u003cinit\u003e",
+        "name": "test.Test.\u003cinit\u003e",
         "purityType": "Stateless",
         "methodArguments": [],
         "fieldModifiers": [],
         "staticFieldModifiers": [],
-        "argumentModifiers": []
+        "argumentModifiers": [],
+        "returnDependency": {
+          "staticFieldDependencies": [],
+          "fieldDependencies": [],
+          "indexOfDependentArguments": [],
+          "dependsOnThis": false
+        },
+        "nativeEffects": []
       },
       {
-        "name": "test.SandroTest.modifyArgumentIndirect",
-        "purityType": "ArgumentModifier",
+        "name": "test.Test.test",
+        "purityType": "StaticModifier",
         "methodArguments": [
-          {
-            "position": 0,
-            "name": "param",
-            "type": "int"
-          },
-          {
-            "position": 1,
-            "name": "model",
-            "type": "test.Model"
-          }
+          "java.awt.Rectangle"
         ],
         "fieldModifiers": [],
-        "staticFieldModifiers": [],
-        "argumentModifiers": [
+        "staticFieldModifiers": [
           {
-            "argumentIndex": 1,
-            "hasDirectAccess": false
+            "name": "staticInt",
+            "type": "int",
+            "owner": "test/Test",
+            "hasDirectAccess": false,
+            "dependsOnParameterFromIndex": [],
+            "fieldDependencies": [],
+            "staticFieldDependencies": []
           }
-        ]
+        ],
+        "argumentModifiers": [],
+        "returnDependency": {
+          "staticFieldDependencies": [],
+          "fieldDependencies": [],
+          "indexOfDependentArguments": [],
+          "dependsOnThis": false
+        },
+        "nativeEffects": []
       },
       {
-        "name": "test.SandroTest.modifyArgumentIndirectStatic",
-        "purityType": "ArgumentModifier",
+        "name": "test.Test.first",
+        "purityType": "StaticModifier",
         "methodArguments": [
-          {
-            "position": 0,
-            "name": "param",
-            "type": "int"
-          },
-          {
-            "position": 1,
-            "name": "model",
-            "type": "test.Model"
-          }
+          "java.awt.Rectangle"
         ],
         "fieldModifiers": [],
-        "staticFieldModifiers": [],
+        "staticFieldModifiers": [
+          {
+            "name": "staticInt",
+            "type": "int",
+            "owner": "test/Test",
+            "hasDirectAccess": false,
+            "dependsOnParameterFromIndex": [],
+            "fieldDependencies": [],
+            "staticFieldDependencies": []
+          }
+        ],
+        "argumentModifiers": [],
+        "returnDependency": {
+          "staticFieldDependencies": [],
+          "fieldDependencies": [],
+          "indexOfDependentArguments": [],
+          "dependsOnThis": false
+        },
+        "nativeEffects": []
+      },
+      {
+        "name": "test.Test.second",
+        "purityType": "ArgumentModifier, StaticModifier",
+        "methodArguments": [
+          "java.awt.Rectangle"
+        ],
+        "fieldModifiers": [],
+        "staticFieldModifiers": [
+          {
+            "name": "staticInt",
+            "type": "int",
+            "owner": "test/Test",
+            "hasDirectAccess": false,
+            "dependsOnParameterFromIndex": [],
+            "fieldDependencies": [],
+            "staticFieldDependencies": []
+          }
+        ],
         "argumentModifiers": [
           {
-            "argumentIndex": 1,
-            "hasDirectAccess": true
+            "argumentIndex": 0,
+            "hasDirectAccess": true,
+            "isDynamicEffect": false,
+            "owner": ""
           }
-        ]
+        ],
+        "returnDependency": {
+          "staticFieldDependencies": [],
+          "fieldDependencies": [],
+          "indexOfDependentArguments": [],
+          "dependsOnThis": false
+        },
+        "nativeEffects": []
       }
     ]
+  },
+  {
+    "fullName": "test",
+    "methodMap": []
   }
 ]

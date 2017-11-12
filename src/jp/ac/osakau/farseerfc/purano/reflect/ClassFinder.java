@@ -38,7 +38,7 @@ public class ClassFinder {
 	final Set<String> classTargets = new HashSet<>() ;
     final List<String> prefix;
 
-    private static final int MAX_LOAD_PASS = 2;
+    private static final int MAX_LOAD_PASS = 3;
 
     private final boolean examChangedSignatures = true;
     private final boolean breakForloop = true;

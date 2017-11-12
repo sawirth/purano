@@ -4,13 +4,13 @@ $purano = 'jp.ac.osakau.farseerfc.purano.reflect.ClassFinder'
 
 # Specify the root path to the .class files or the folder of the .jar file which should be analyzed
 # If you want to analyze a jar file, add the path to the file with a '\*' at the end
-$homeDir = 'C:\Users\Sandro\Downloads\Libraries\joda-time\*'
+$homeDir = 'C:\Users\Sandro\Downloads\Libraries\slf4j\*'
 
 # Specify the package which should be analyzed
-$pkg = 'org.joda'
+$pkg = 'org.slf4j'
 
 # Specify the directory where the results should be saved
-$outputPath = 'C:\Users\Sandro\Documents\GitHub\purano'
+$outputPath = 'C:\Users\Sandro\Documents\GitHub\slf4j'
 
 # If set to true, the result will contain all analyzed classes and not only the ones from the specified package
 $showExtended = False

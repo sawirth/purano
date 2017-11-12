@@ -41,7 +41,7 @@
 <body>
 
 	<div class="clazz">
-		class 3
+		class 2
 	</div>
 	<div class="clazz">
 		method 5
@@ -50,40 +50,40 @@
 		unknown 0
 	</div>
 	<div class="clazz">
-		stateless 2
+		stateless 1
 	</div>
 	<div class="clazz">
 		stateful 0
 	</div>
 	<div class="clazz">
-		modifier 3
+		modifier 4
 	</div>
 	<div class="clazz">
-		fieldM 1
+		fieldM 0
 	</div>
 	<div class="clazz">
-		staticM 0
+		staticM 4
 	</div>
 	<div class="clazz">
-		argM 2
+		argM 1
 	</div>
 	<div class="clazz">
 		nativeE 0
 	</div>
 	<div class="clazz">
-		emethod 19
+		emethod 66
 	</div>
 	<div class="clazz">
 		eunknown 0
 	</div>
 	<div class="clazz">
-		estateless 17
+		estateless 49
 	</div>
 	<div class="clazz">
-		estateful 2
+		estateful 6
 	</div>
 	<div class="clazz">
-		emodifier 0
+		emodifier 11
 	</div>
 	<div class="clazz">
 		esln 0
@@ -92,31 +92,31 @@
 		esfn 0
 	</div>
 	<div class="clazz">
-		en 0
+		en 11
 	</div>
 	<div class="clazz">
-		hmethod 20
+		hmethod 67
 	</div>
 	<div class="clazz">
 		hunknown 0
 	</div>
 	<div class="clazz">
-		hstateless 18
+		hstateless 48
 	</div>
 	<div class="clazz">
-		hstateful 1
+		hstateful 5
 	</div>
 	<div class="clazz">
-		hmodifier 1
+		hmodifier 14
 	</div>
 	<div class="clazz">
-		hsln 0
+		hsln 3
 	</div>
 	<div class="clazz">
 		hsfn 0
 	</div>
 	<div class="clazz">
-		hn 1
+		hn 14
 	</div>
 <hr/>
 
@@ -126,25 +126,14 @@ package  ;
 <div>
 </div>
 	<div class="clazz">
-		<h2>class test</h2>
-<div class="caches">
-	fields: 
-</div>
-<div>
-<div class="members">
-</div>
-</div>
-
-	</div>
-	<div class="clazz">
-		<h2>class test.SandroTest</h2>
+		<h2>class test.Test</h2>
 <div class="caches">
 	fields: 
 </div>
 <div>
 <div class="members">
 		<div class="method">
-	<h3><span style="color:green">void test.SandroTest#<init> ()</span></h3>
+	<h3><span style="color:green">void test.Test#test (java.awt.Rectangle)</span></h3>
 	<div class="methodMember">
 		<div class="overrides">
 		</div>
@@ -152,47 +141,11 @@ package  ;
 		<div class="calls">
 		</div>
 		
-		<div class="purity"><span style="color:grey">Stateless</span></div>
-		
-		<div class="effects">
-		</div>
-		
-		<pre><code></code></pre>
-	</div>		
-	<div class="asm">
-<pre><code>   L0
-    LINENUMBER 3 L0
-    ALOAD 0
-    INVOKESPECIAL java/lang/Object.<init> ()V
-    RETURN
-   L1
-    LOCALVARIABLE this Ltest/SandroTest; L0 L1 0
-    MAXSTACK = 1
-    MAXLOCALS = 1
-<<<<<<<<<<<<<<
-    3: ALOAD
-    3: INVOKESPECIAL
-    3: RETURN
-</code></pre>
-	</div>
-	<div class="source">
-<pre><code></code></pre></div>
-</div>
-
-		<div class="method">
-	<h3><span style="color:green">void test.SandroTest#modifyArgumentIndirectStatic (int, test.Model)</span></h3>
-	<div class="methodMember">
-		<div class="overrides">
-		</div>
-		
-		<div class="calls">
-		</div>
-		
-		<div class="purity"><span style="color:grey">ArgumentModifier</span></div>
+		<div class="purity"><span style="color:grey">StaticModifier</span></div>
 		
 		<div class="effects">
 			<div class="effect">
-			@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>, <span style="color:red">dependArguments= {"int param"}</span>)
+			@<span style="color:brown">Static</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Test.class</span>, <span style="color:red">name="staticInt"</span>, <span style="color:red">from = "void test.Test#first (java.awt.Rectangle)"</span>)
 			</div>
 		</div>
 		
@@ -201,22 +154,19 @@ package  ;
 	<div class="asm">
 <pre><code>   L0
     LINENUMBER 9 L0
-    ALOAD 1
-    ILOAD 0
-    PUTFIELD test/Model.publicInt : I
+    ALOAD 0
+    INVOKESTATIC test/Test.first (Ljava/awt/Rectangle;)V
    L1
     LINENUMBER 10 L1
     RETURN
    L2
-    LOCALVARIABLE param I L0 L2 0
-    LOCALVARIABLE model Ltest/Model; L0 L2 1
-    MAXSTACK = 2
-    MAXLOCALS = 2
+    LOCALVARIABLE rectangle Ljava/awt/Rectangle; L0 L2 0
+    MAXSTACK = 1
+    MAXLOCALS = 1
 <<<<<<<<<<<<<<
     9: ALOAD
-    9: ILOAD
-    9: PUTFIELD
-@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>, <span style="color:red">dependArguments= {"int param"}</span>)
+    9: INVOKESTATIC
+@<span style="color:brown">Static</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Test.class</span>, <span style="color:red">name="staticInt"</span>, <span style="color:red">from = "void test.Test#first (java.awt.Rectangle)"</span>)
    10: RETURN
 </code></pre>
 	</div>
@@ -225,65 +175,7 @@ package  ;
 </div>
 
 		<div class="method">
-	<h3><span style="color:green">void test.SandroTest#modifyArgumentIndirect (int, test.Model)</span></h3>
-	<div class="methodMember">
-		<div class="overrides">
-		</div>
-		
-		<div class="calls">
-		</div>
-		
-		<div class="purity"><span style="color:grey">ArgumentModifier</span></div>
-		
-		<div class="effects">
-			<div class="effect">
-			@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>, <span style="color:red">dependArguments= {"test.Model model"}</span>, <span style="color:red">from = "void test.Model#setPrivateInt (int)"</span>)
-			</div>
-		</div>
-		
-		<pre><code></code></pre>
-	</div>		
-	<div class="asm">
-<pre><code>   L0
-    LINENUMBER 5 L0
-    ALOAD 2
-    ILOAD 1
-    INVOKEVIRTUAL test/Model.setPrivateInt (I)V
-   L1
-    LINENUMBER 6 L1
-    RETURN
-   L2
-    LOCALVARIABLE this Ltest/SandroTest; L0 L2 0
-    LOCALVARIABLE param I L0 L2 1
-    LOCALVARIABLE model Ltest/Model; L0 L2 2
-    MAXSTACK = 2
-    MAXLOCALS = 3
-<<<<<<<<<<<<<<
-    5: ALOAD
-    5: ILOAD
-    5: INVOKEVIRTUAL
-@<span style="color:brown">Argument</span>(<span style="color:red">name="model"</span>, <span style="color:red">dependArguments= {"test.Model model"}</span>, <span style="color:red">from = "void test.Model#setPrivateInt (int)"</span>)
-    6: RETURN
-</code></pre>
-	</div>
-	<div class="source">
-<pre><code></code></pre></div>
-</div>
-
-</div>
-</div>
-
-	</div>
-	<div class="clazz">
-		<h2>class test.Model</h2>
-<div class="caches">
-	fields: 
-		<p>int test.Model.privateInt: com.google.common.base.Joiner@709112ad</p>
-</div>
-<div>
-<div class="members">
-		<div class="method">
-	<h3><span style="color:green">void test.Model#<init> ()</span></h3>
+	<h3><span style="color:green">void test.Test#<init> ()</span></h3>
 	<div class="methodMember">
 		<div class="overrides">
 		</div>
@@ -300,18 +192,18 @@ package  ;
 	</div>		
 	<div class="asm">
 <pre><code>   L0
-    LINENUMBER 3 L0
+    LINENUMBER 5 L0
     ALOAD 0
     INVOKESPECIAL java/lang/Object.<init> ()V
     RETURN
    L1
-    LOCALVARIABLE this Ltest/Model; L0 L1 0
+    LOCALVARIABLE this Ltest/Test; L0 L1 0
     MAXSTACK = 1
     MAXLOCALS = 1
 <<<<<<<<<<<<<<
-    3: ALOAD
-    3: INVOKESPECIAL
-    3: RETURN
+    5: ALOAD
+    5: INVOKESPECIAL
+    5: RETURN
 </code></pre>
 	</div>
 	<div class="source">
@@ -319,7 +211,7 @@ package  ;
 </div>
 
 		<div class="method">
-	<h3><span style="color:green">void test.Model#setPrivateInt (int)</span></h3>
+	<h3><span style="color:green">void test.Test#first (java.awt.Rectangle)</span></h3>
 	<div class="methodMember">
 		<div class="overrides">
 		</div>
@@ -327,11 +219,11 @@ package  ;
 		<div class="calls">
 		</div>
 		
-		<div class="purity"><span style="color:grey">Modifier</span></div>
+		<div class="purity"><span style="color:grey">StaticModifier</span></div>
 		
 		<div class="effects">
 			<div class="effect">
-			@<span style="color:brown">Field</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Model.class</span>, <span style="color:red">name="privateInt"</span>, <span style="color:red">dependArguments= {"int privateInt"}</span>)
+			@<span style="color:brown">Static</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Test.class</span>, <span style="color:red">name="staticInt"</span>, <span style="color:red">from = "void test.Test#second (java.awt.Rectangle)"</span>)
 			</div>
 		</div>
 		
@@ -339,30 +231,130 @@ package  ;
 	</div>		
 	<div class="asm">
 <pre><code>   L0
-    LINENUMBER 8 L0
+    LINENUMBER 13 L0
     ALOAD 0
-    ILOAD 1
-    PUTFIELD test/Model.privateInt : I
+    INVOKESTATIC test/Test.second (Ljava/awt/Rectangle;)V
    L1
-    LINENUMBER 9 L1
+    LINENUMBER 14 L1
     RETURN
    L2
-    LOCALVARIABLE this Ltest/Model; L0 L2 0
-    LOCALVARIABLE privateInt I L0 L2 1
-    MAXSTACK = 2
-    MAXLOCALS = 2
+    LOCALVARIABLE rectangle Ljava/awt/Rectangle; L0 L2 0
+    MAXSTACK = 1
+    MAXLOCALS = 1
 <<<<<<<<<<<<<<
-    8: ALOAD
-    8: ILOAD
-    8: PUTFIELD
-@<span style="color:brown">Field</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Model.class</span>, <span style="color:red">name="privateInt"</span>, <span style="color:red">dependArguments= {"int privateInt"}</span>)
-    9: RETURN
+   13: ALOAD
+   13: INVOKESTATIC
+@<span style="color:brown">Static</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Test.class</span>, <span style="color:red">name="staticInt"</span>, <span style="color:red">from = "void test.Test#second (java.awt.Rectangle)"</span>)
+   14: RETURN
 </code></pre>
 	</div>
 	<div class="source">
 <pre><code></code></pre></div>
 </div>
 
+		<div class="method">
+	<h3><span style="color:green">void test.Test#callNative ()</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">StaticModifier</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Static</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Test.class</span>, <span style="color:red">name="staticInt"</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 22 L0
+    BIPUSH 100
+    PUTSTATIC test/Test.staticInt : I
+   L1
+    LINENUMBER 23 L1
+    RETURN
+    MAXSTACK = 1
+    MAXLOCALS = 0
+<<<<<<<<<<<<<<
+   22: BIPUSH
+   22: PUTSTATIC
+@<span style="color:brown">Static</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Test.class</span>, <span style="color:red">name="staticInt"</span>)
+   23: RETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+		<div class="method">
+	<h3><span style="color:green">void test.Test#second (java.awt.Rectangle)</span></h3>
+	<div class="methodMember">
+		<div class="overrides">
+		</div>
+		
+		<div class="calls">
+		</div>
+		
+		<div class="purity"><span style="color:grey">ArgumentModifier, StaticModifier</span></div>
+		
+		<div class="effects">
+			<div class="effect">
+			@<span style="color:brown">Argument</span>(<span style="color:red">name="rectangle"</span>)
+			</div>
+			<div class="effect">
+			@<span style="color:brown">Static</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Test.class</span>, <span style="color:red">name="staticInt"</span>, <span style="color:red">from = "void test.Test#callNative ()"</span>)
+			</div>
+		</div>
+		
+		<pre><code></code></pre>
+	</div>		
+	<div class="asm">
+<pre><code>   L0
+    LINENUMBER 17 L0
+    ALOAD 0
+    BIPUSH 100
+    PUTFIELD java/awt/Rectangle.height : I
+   L1
+    LINENUMBER 18 L1
+    INVOKESTATIC test/Test.callNative ()V
+   L2
+    LINENUMBER 19 L2
+    RETURN
+   L3
+    LOCALVARIABLE rectangle Ljava/awt/Rectangle; L0 L3 0
+    MAXSTACK = 2
+    MAXLOCALS = 1
+<<<<<<<<<<<<<<
+   17: ALOAD
+   17: BIPUSH
+   17: PUTFIELD
+@<span style="color:brown">Argument</span>(<span style="color:red">name="rectangle"</span>)
+   18: INVOKESTATIC
+@<span style="color:brown">Static</span>(<span style="color:red">type=int.class</span>, <span style="color:red">owner=test.Test.class</span>, <span style="color:red">name="staticInt"</span>, <span style="color:red">from = "void test.Test#callNative ()"</span>)
+   19: RETURN
+</code></pre>
+	</div>
+	<div class="source">
+<pre><code></code></pre></div>
+</div>
+
+</div>
+</div>
+
+	</div>
+	<div class="clazz">
+		<h2>class test</h2>
+<div class="caches">
+	fields: 
+</div>
+<div>
+<div class="members">
 </div>
 </div>
 

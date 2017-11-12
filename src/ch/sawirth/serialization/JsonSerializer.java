@@ -196,6 +196,8 @@ public class JsonSerializer {
                 type = type.substring(1);
             }
 
+            type = type.replace('/', '.');
+
             if (classOwner.equals(owner)) {
                 fieldDependencies.add(new FieldDependency(name, owner, type, true, isDynamicEffect));
             } else {
