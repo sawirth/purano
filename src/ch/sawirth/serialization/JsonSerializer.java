@@ -58,7 +58,8 @@ public class JsonSerializer {
 
     private ClassRepresentation createClassRepresentation(ClassRep classRep) {
         HashSet<MethodRepresentation> methodRepresentations = new HashSet<>();
-        for (MethodRep methodRep : classRep.getAllMethods()) {
+        Collection<MethodRep> methodReps = classRep.getAllMethods();
+        for (MethodRep methodRep : methodReps) {
             methodRepresentations.add(createMethodRepresentation(methodRep));
         }
 

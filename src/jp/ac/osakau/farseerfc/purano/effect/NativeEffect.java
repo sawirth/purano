@@ -36,8 +36,12 @@ public class NativeEffect extends Effect<NativeEffect> implements Cloneable{
 		}
 		return false;
 	}
-	
+
 	public boolean equals(NativeEffect other){
+		if (other.getFrom() != null && this.getFrom() != null) {
+			return other.getFrom().equals(this.getFrom());
+		}
+
 		return true;
 	}
 	
