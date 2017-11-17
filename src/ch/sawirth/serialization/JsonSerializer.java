@@ -59,6 +59,7 @@ public class JsonSerializer {
     private ClassRepresentation createClassRepresentation(ClassRep classRep) {
         HashSet<MethodRepresentation> methodRepresentations = new HashSet<>();
         Collection<MethodRep> methodReps = classRep.getAllMethods();
+
         for (MethodRep methodRep : methodReps) {
             methodRepresentations.add(createMethodRepresentation(methodRep));
         }
@@ -219,7 +220,16 @@ public class JsonSerializer {
                 --position;
             }
 
-            argumentModifiers.add(new ArgumentModifier(position, effect.getFrom() == null, false));
+            String owner = effect.getFrom().getInsnNode().owner;
+            String name = effect.getFrom().getInsnNode().name;
+            MethodInsnNode origin = findArgumentModifierOrigin(effect.getFrom(), false);
+            argumentModifiers.add(new ArgumentModifier(position,
+                                                       effect.getFrom() == null,
+                                                       false,
+                                                       owner,
+                                                       name,
+                                                       origin.owner,
+                                                       origin.name));
         }
 
         for (ArgumentEffect effect : dynamicArgumentEffects) {
@@ -229,12 +239,43 @@ public class JsonSerializer {
             }
 
             String owner = effect.getFrom().getInsnNode().owner;
-
-            argumentModifiers.add(
-                    new ArgumentModifier(position, effect.getFrom() == null, true, owner));
+            String name = effect.getFrom().getInsnNode().name;
+            MethodInsnNode origin = findArgumentModifierOrigin(effect.getFrom(), true);
+            argumentModifiers.add(new ArgumentModifier(position,
+                                                       effect.getFrom() == null,
+                                                       true,
+                                                       owner,
+                                                       name,
+                                                       origin.owner,
+                                                       origin.name));
         }
 
         return argumentModifiers;
+    }
+
+    private MethodInsnNode findArgumentModifierOrigin(MethodRep fromMethod, boolean isDynamic) {
+        Set<ArgumentEffect> argumentEffects;
+        if (isDynamic) {
+            argumentEffects = fromMethod.getDynamicEffects().getArgumentEffects();
+        } else {
+            argumentEffects = fromMethod.getStaticEffects().getArgumentEffects();
+        }
+
+        //Finding the origin method only works if each method in the callgraph has just one native effect
+        //In this case we abort and just return the best possible option
+        if (argumentEffects.size() != 1) {
+            return fromMethod.getInsnNode();
+        }
+
+        for (ArgumentEffect effect : argumentEffects) {
+            if (effect.getFrom() == null) {
+                return fromMethod.getInsnNode();
+            }
+
+            return findArgumentModifierOrigin(effect.getFrom(), isDynamic);
+        }
+
+        return fromMethod.getInsnNode();
     }
 
     private ReturnDependency createReturnDependency(DepSet staticDepSet,
@@ -296,7 +337,7 @@ public class JsonSerializer {
             MethodRep fromMethod = effect.getFrom();
             if (fromMethod != null) {
                 MethodInsnNode insnNode = fromMethod.getInsnNode();
-                MethodInsnNode originMethod = findNativeOrigin(fromMethod);
+                MethodInsnNode originMethod = findNativeOrigin(fromMethod, false);
                 nativeEffects.add(new NativeEffect(insnNode.owner,
                                                    insnNode.name,
                                                    originMethod.owner,
@@ -309,7 +350,7 @@ public class JsonSerializer {
             MethodRep fromMethod = effect.getFrom();
             if (fromMethod != null) {
                 MethodInsnNode insnNode = fromMethod.getInsnNode();
-                MethodInsnNode originMethod = findNativeOrigin(fromMethod);
+                MethodInsnNode originMethod = findNativeOrigin(fromMethod, true);
                 nativeEffects.add(new NativeEffect(insnNode.owner,
                                                    insnNode.name,
                                                    originMethod.owner,
@@ -321,8 +362,13 @@ public class JsonSerializer {
         return nativeEffects;
     }
 
-    private MethodInsnNode findNativeOrigin(MethodRep fromMethod) {
-        Set<Effect> otherEffects = fromMethod.getStaticEffects().getOtherEffects();
+    private MethodInsnNode findNativeOrigin(MethodRep fromMethod, boolean isDynamic) {
+        Set<Effect> otherEffects;
+        if (isDynamic) {
+            otherEffects = fromMethod.getDynamicEffects().getOtherEffects();
+        } else {
+            otherEffects = fromMethod.getStaticEffects().getOtherEffects();
+        }
 
         //Finding the origin method only works if each method in the callgraph has just one native effect
         //In this case we abort and just return the best possible option
@@ -339,7 +385,7 @@ public class JsonSerializer {
                 return fromMethod.getInsnNode();
             }
 
-            return findNativeOrigin(effect.getFrom());
+            return findNativeOrigin(effect.getFrom(), isDynamic);
         }
 
         return fromMethod.getInsnNode();

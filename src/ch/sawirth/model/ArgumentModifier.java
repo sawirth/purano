@@ -5,15 +5,24 @@ public class ArgumentModifier {
     public final boolean hasDirectAccess;
     public final boolean isDynamicEffect;
     public final String owner;
+    public final String name;
+    public final String originOwner;
+    public final String originName;
 
-    public ArgumentModifier(int argumentIndex, boolean hasDirectAccess, boolean isDynamicEffect) {
-        this(argumentIndex, hasDirectAccess, isDynamicEffect, "");
-    }
-
-    public ArgumentModifier(int argumentIndex, boolean hasDirectAccess, boolean isDynamicEffect, String owner) {
+    public ArgumentModifier(int argumentIndex,
+                            boolean hasDirectAccess,
+                            boolean isDynamicEffect,
+                            String owner,
+                            String name,
+                            String originOwner,
+                            String originName)
+    {
         this.argumentIndex = argumentIndex;
         this.hasDirectAccess = hasDirectAccess;
         this.isDynamicEffect = isDynamicEffect;
         this.owner = owner;
+        this.name = name;
+        this.originOwner = originOwner;
+        this.originName = originName;
     }
 }
