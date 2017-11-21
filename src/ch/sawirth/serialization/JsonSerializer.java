@@ -215,42 +215,37 @@ public class JsonSerializer {
                                                            boolean isStaticMethod) {
         List<ArgumentModifier> argumentModifiers = new ArrayList<>();
         for (ArgumentEffect effect : staticArgumentEffects) {
-            int position = effect.getArgPos();
-            if (!isStaticMethod) {
-                --position;
-            }
-
-            String owner = effect.getFrom().getInsnNode().owner;
-            String name = effect.getFrom().getInsnNode().name;
-            MethodInsnNode origin = findArgumentModifierOrigin(effect.getFrom(), false);
-            argumentModifiers.add(new ArgumentModifier(position,
-                                                       effect.getFrom() == null,
-                                                       false,
-                                                       owner,
-                                                       name,
-                                                       origin.owner,
-                                                       origin.name));
+            argumentModifiers.add(createSingleArgumentModifier(effect, false, isStaticMethod));
         }
 
         for (ArgumentEffect effect : dynamicArgumentEffects) {
-            int position = effect.getArgPos();
-            if (!isStaticMethod) {
-                --position;
-            }
-
-            String owner = effect.getFrom().getInsnNode().owner;
-            String name = effect.getFrom().getInsnNode().name;
-            MethodInsnNode origin = findArgumentModifierOrigin(effect.getFrom(), true);
-            argumentModifiers.add(new ArgumentModifier(position,
-                                                       effect.getFrom() == null,
-                                                       true,
-                                                       owner,
-                                                       name,
-                                                       origin.owner,
-                                                       origin.name));
+            argumentModifiers.add(createSingleArgumentModifier(effect, true, isStaticMethod));
         }
 
         return argumentModifiers;
+    }
+
+    private ArgumentModifier createSingleArgumentModifier(ArgumentEffect effect, boolean isDynamic, boolean isStaticMethod) {
+        int position = effect.getArgPos();
+        if (!isStaticMethod) {
+            --position;
+        }
+
+        MethodRep fromMethod = effect.getFrom();
+        String owner = "", name = "", originOwner = "", originName = "";
+        if (fromMethod != null) {
+            MethodInsnNode fromNode = fromMethod.getInsnNode();
+            owner = fromNode.owner;
+            name = fromNode.name;
+
+            MethodInsnNode origin = findArgumentModifierOrigin(fromMethod, isDynamic);
+            if (origin != null) {
+                originOwner = origin.owner;
+                originName = origin.name;
+            }
+        }
+
+        return new ArgumentModifier(position, effect.getFrom() == null, isDynamic, owner, name, originOwner, originName);
     }
 
     private MethodInsnNode findArgumentModifierOrigin(MethodRep fromMethod, boolean isDynamic) {
