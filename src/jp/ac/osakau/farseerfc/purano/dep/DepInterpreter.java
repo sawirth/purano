@@ -19,12 +19,9 @@ import org.objectweb.asm.tree.*;
 import org.objectweb.asm.tree.analysis.AnalyzerException;
 import org.objectweb.asm.tree.analysis.Interpreter;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import java.util.*;
 
 @Slf4j
 public class DepInterpreter extends Interpreter<DepValue> implements Opcodes{
@@ -724,18 +721,41 @@ public class DepInterpreter extends Interpreter<DepValue> implements Opcodes{
         result.getDeps().merge(deps);
 
         if (rep.isNative() && findNative) {
-            effect.addOtherEffect(new NativeEffect(rep));
-            return result;
+            MethodInsnNode node = rep.getInsnNode();
+            String classMethodIdentifier = node.owner + "." + node.name;
+
+            if (NativeWhitelist.filterOut(classMethodIdentifier)) {
+                log.info("Native filtered out " + classMethodIdentifier);
+            } else {
+                log.info("Native effect found: " + classMethodIdentifier);
+                effect.addOtherEffect( new NativeEffect(rep));
+                return result;
+            }
         }
 
-        // transitive from origin
+        Set<String> staticModifierWhitelist = new HashSet<>(Arrays.asList(
+                "SecurityManager.packageAccess",
+                "Throwable.",
+                "FloatingDecimal",
+                "Locale.defaultLocale"
+        ));
 
-//        for(StaticEffect sfe:callEffect.getStaticField().values()){
-//            effect.addStaticField(sfe.duplicate(rep));
-//        }
         if(callEffect.getStaticField().size()>0){
-            for (StaticEffect staticEffect : callEffect.getStaticField().values())             {
-                effect.addStaticField(new StaticEffect(staticEffect.getDesc(),staticEffect.getOwner(),staticEffect.getName(),new DepSet(), rep));
+            for (StaticEffect staticEffect : callEffect.getStaticField().values()) {
+                String fullIdentifier = staticEffect.getOwner() + "." + staticEffect.getName();
+                boolean filterOut = false;
+                for (String whiteListValue : staticModifierWhitelist) {
+                    if (fullIdentifier.contains(whiteListValue)) {
+                        filterOut = true;
+                        break;
+                    }
+                }
+
+                if (!filterOut) {
+                    effect.addStaticField(new StaticEffect(staticEffect.getDesc(),staticEffect.getOwner(),staticEffect.getName(),new DepSet(), rep));
+                } else {
+                    log.info("Filtered out " + fullIdentifier);
+                }
             }
         }
 

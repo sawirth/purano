@@ -27,7 +27,7 @@ public class ClassFinder {
 				return path;
 			}
 		}
-		log.info("Not found source for {}", name);
+
 		return null;
 	}
 

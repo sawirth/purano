@@ -13,13 +13,14 @@ import jp.ac.osakau.farseerfc.purano.dep.FieldDep;
 import jp.ac.osakau.farseerfc.purano.effect.*;
 import jp.ac.osakau.farseerfc.purano.reflect.ClassRep;
 import jp.ac.osakau.farseerfc.purano.reflect.MethodRep;
+import lombok.extern.slf4j.Slf4j;
 import org.objectweb.asm.tree.MethodInsnNode;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+@Slf4j
 public class JsonSerializer {
 
     private final Set<ClassRep> classRepSet;
@@ -249,6 +250,14 @@ public class JsonSerializer {
     }
 
     private MethodInsnNode findArgumentModifierOrigin(MethodRep fromMethod, boolean isDynamic) {
+        MethodInsnNode methodInsnNode = fromMethod.getInsnNode();
+        if (methodInsnNode != null) {
+            log.info(methodInsnNode.owner + "#" + methodInsnNode.name);
+            if (methodInsnNode.owner.contains("regex.Pattern$Node")) {
+                return fromMethod.getInsnNode();
+            }
+        }
+
         Set<ArgumentEffect> argumentEffects;
         if (isDynamic) {
             argumentEffects = fromMethod.getDynamicEffects().getArgumentEffects();

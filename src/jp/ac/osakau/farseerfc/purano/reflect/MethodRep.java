@@ -10,11 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import jp.ac.osakau.farseerfc.purano.ano.Purity;
-import jp.ac.osakau.farseerfc.purano.dep.DepAnalyzer;
-import jp.ac.osakau.farseerfc.purano.dep.DepEffect;
-import jp.ac.osakau.farseerfc.purano.dep.DepFrame;
-import jp.ac.osakau.farseerfc.purano.dep.DepInterpreter;
-import jp.ac.osakau.farseerfc.purano.dep.FieldDep;
+import jp.ac.osakau.farseerfc.purano.dep.*;
 import jp.ac.osakau.farseerfc.purano.effect.NativeEffect;
 import jp.ac.osakau.farseerfc.purano.util.Escaper;
 import jp.ac.osakau.farseerfc.purano.util.MethodDesc;
@@ -278,7 +274,14 @@ public class MethodRep extends MethodVisitor implements Purity {
 				// do nothing
 //				log.info("Meet Abstract {}",toString(new Types()));
 			}else if(isNative){
-				analyzeResult.getOtherEffects().add(new NativeEffect(null));
+				MethodInsnNode node = this.getInsnNode();
+				String identifier = node.owner + "." + node.name;
+				if (NativeWhitelist.filterOut(identifier)) {
+					log.info("Native filtered out: " + identifier);
+				} else {
+					log.info("Native effect found: " + identifier);
+					analyzeResult.getOtherEffects().add(new NativeEffect(null));
+				}
 			}else{
 				if(methodNode == null){
 					final MethodRep thisRep = this;
